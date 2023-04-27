@@ -1,6 +1,8 @@
 import numpy as np
 
-nmax=700
+np.set_printoptions(suppress=True, formatter={'float_kind':'{:0.2f}'.format})
+
+nmax=70
 eps=1E-8
 
 '''
@@ -12,6 +14,7 @@ def ch(x:float)->float:
 	return 0.5*(np.exp(x) + np.exp(-x))
 
 class alg:
+
 	def __init__(self) -> None:
 		self.x = np.zeros(nmax)
 		self.f = np.zeros(nmax)
@@ -28,7 +31,7 @@ class alg:
 
 
 	def init(self):
-		self.n = 21
+		self.n = 10
 		self.b0 = 1.5
 		
 		bj = 1
@@ -48,11 +51,14 @@ class alg:
 			self.b[i] =self.b[i]/self.c[i,i]
 			for j in range(1,i):
 				self.c1[i,j] =self.c[j,i]/self.c[j,j]
+
+
 	def _print(self, x : np.ndarray):
 		print(f'n={self.n} b={self.b0}')
 		for i in range(1,self.n):
 			print(x[i])
 		print('\n\n')
+
 
 	def solve(self):
 		zA = 0
@@ -69,7 +75,7 @@ class alg:
 				if p>0:
 					self.A[p] = 0
 				zA = z
-				for k in range(p-1):
+				for k in range(p):
 					zA = -zA
 					self.A[p] = self.A[p]+zA*self.c1[j+p,j+k]*self.A[k]
 				xs = self.x[j]
@@ -84,16 +90,22 @@ class alg:
 				if (r<eps) or (j+p>nmax):
 					break
 		print(f'j+p={maxjp}')
-	
+
+
 asd = alg()
 asd.init()
-# print(asd.c)
-# print(asd.c1)
-# print(asd.b)
+# print(f'c:\n{asd.c}\n\n')
+print(f'c1:\n')
+for i in range(10):
+	for j in range(10):
+		print(asd.c1[i,j], end=' ')
+	print()
+print(f'c1:\n')
+# print(f'b:\n{asd.b}\n\n')
 asd.solve()
 asd._print(asd.x)
 r = 1.0
-for i in range(1,10):
+for i in range(1,11):
 	print(r/ch(np.sqrt(asd.b0)))
 	r = r*asd.b0/((2*i-1)*2*i)
 
