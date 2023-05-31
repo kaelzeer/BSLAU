@@ -113,7 +113,7 @@ class Utils:
 		elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
 			return 0.000001
 		elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-			return 0.000001
+			return 0.0000001
 		return 0.000001
 		
 	@staticmethod
@@ -128,5 +128,5 @@ class Utils:
 		elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
 			pass
 		elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-			pass
+			0.001
 		return 0.001
