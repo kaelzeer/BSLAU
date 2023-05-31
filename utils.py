@@ -95,7 +95,7 @@ class Utils:
 			elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
 				return Constants.THIRD_MATRIX_LIMIT * 2
 			elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-				return Constants.THIRD_MATRIX_LIMIT
+				return Constants.THIRD_MATRIX_LIMIT * 3
 		elif algorithm.matrix_num == 4:
 			return Constants.FOURTH_MATRIX_LIMIT
 		return Constants.BASE_MATRIX_LIMIT

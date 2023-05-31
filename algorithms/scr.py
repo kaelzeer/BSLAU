@@ -148,12 +148,15 @@ class SCR(Algorithm):
 			for i in range(j + 1):
 				d = max(d, abs(self.x[i] - self.xss[i]))
 			# do-while-emu exit condition
+			print(f'D: {d}')
 			if not self.solve_to_n_answer:
 				if d < Utils.get_second_d(self):
 					break
 			else:
 				if d < Utils.get_second_d(self) and j > 13:
 					break
+			if j >= self.limit - 1:
+				break
 			j += 1
 
 		print(f'j+p={maxjp}')
