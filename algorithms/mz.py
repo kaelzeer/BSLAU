@@ -30,12 +30,6 @@ class Zeidel(Algorithm):
 			self.steps += 1
 			self.xss = np.array(self.xs)
 
-			print('a:')
-			for i in range(n):
-				for j in range(n):
-					print(self.a[i][j], end=' ')
-				print()
-
 			while True:
 
 				d = 0.0
@@ -66,3 +60,5 @@ class Zeidel(Algorithm):
 			else:
 				if d < Utils.get_second_d(self) and n > 13:
 					break
+			if n >= self.limit:
+				break
