@@ -109,6 +109,13 @@ class GaussJordanoAlg(Algorithm):
 			if cur_row > self.answers_length: # or d < 0.001:
 				print(f'end')
 				break
+			if cur_col >= self.limit:
+				print(f'last_col: {cur_col}')
+				break
+			if self.current_mat_size >= self.limit:
+				print(f'last_mat_size: {self.current_mat_size}')
+				break
+			
 
 '''
 	def repeatedSolve(self):

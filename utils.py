@@ -93,7 +93,7 @@ class Utils:
 			elif algorithm.alg_type == Constants.ALG_TYPE_MZ:
 				return Constants.THIRD_MATRIX_LIMIT
 			elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
-				return Constants.THIRD_MATRIX_LIMIT * 2
+				return Constants.THIRD_MATRIX_LIMIT * 3
 			elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
 				return Constants.THIRD_MATRIX_LIMIT * 3
 		elif algorithm.matrix_num == 4:
@@ -118,6 +118,8 @@ class Utils:
 		elif algorithm.alg_type == Constants.ALG_TYPE_MZ:
 			return 0.0000001
 		elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
+			if algorithm.matrix_num == 3:
+				return 0.00001
 			return 0.000001
 		elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
 			return 0.0000001
