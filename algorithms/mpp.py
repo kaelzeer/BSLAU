@@ -20,7 +20,7 @@ class MPP(Algorithm):
 
 
 	def solve(self):
-		
+
 		self.n = 3
 		d = 0.0
 		s = 0.0
@@ -29,11 +29,6 @@ class MPP(Algorithm):
 		while True:
 			self.steps += 1
 			self.xss = np.array(self.xs)
-			print('a:')
-			for i in range(self.n):
-				for j in range(self.n):
-					print(self.a[i][j], end=' ')
-				print()
 			
 			while True:
 				inner_steps += 1
@@ -52,15 +47,13 @@ class MPP(Algorithm):
 				# do-while-emu exit condition
 				if d < Utils.get_first_d(self):
 					break
-				print(f'inner_steps: {inner_steps}, d: {d}')
-			
 			
 			d = 0.0
 			for i in range(self.n - 1):
 				d = max(d, abs(self.xs[i] - self.xss[i]))
 			self.n += 1
-			if d < 0.0012:
-				print(f'n: {self.n}, d: {d}')
+			# if d < 0.0012:
+			print(f'n: {self.n}, d: {d}')
 			# do-while-emu exit condition
 			if not self.solve_to_n_answer:
 				if d < Utils.get_second_d(self):
@@ -68,3 +61,5 @@ class MPP(Algorithm):
 			else:
 				if d < Utils.get_second_d(self) and self.n > 13:
 					break
+			if self.n >= self.limit:
+				break

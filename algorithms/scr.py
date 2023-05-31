@@ -102,9 +102,11 @@ class SCR(Algorithm):
 		# y = np.array(self.f)
 		y = np.zeros(self.limit)
 		maxjp = 0
+		j = 0
 
-		for j in range(self.limit):
+		while True:
 			self.steps += 1
+			self.xss = np.array(self.x)
 			A = np.zeros(self.limit)
 			A[0] = 1
 			p = 0
@@ -141,5 +143,17 @@ class SCR(Algorithm):
 				#until
 				if (r < Utils.get_first_d(self)) or (j + p >= self.limit):
 					break
+			
+			d = 0.0
+			for i in range(j + 1):
+				d = max(d, abs(self.x[i] - self.xss[i]))
+			# do-while-emu exit condition
+			if not self.solve_to_n_answer:
+				if d < Utils.get_second_d(self):
+					break
+			else:
+				if d < Utils.get_second_d(self) and j > 13:
+					break
+			j += 1
 
 		print(f'j+p={maxjp}')
