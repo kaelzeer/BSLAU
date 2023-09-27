@@ -1,3 +1,4 @@
+from io import TextIOWrapper
 import time
 
 class Time_logger:
@@ -45,12 +46,17 @@ class Time_logger:
 		self.__events_time[event_name] = duration
 
 
-	def print_events(self) -> None:
+	def print_events(self, to_file : bool, output : TextIOWrapper) -> None:
 		'''
 		Print the recorded events and their durations.
 		'''
-		print('Time logger:')
-		for key, value in self.__events_time.items():
-			print(f'{key}: {value * 1000:.0f} ms')
+		if to_file:
+			print('Time logger:', file=output)
+			for key, value in self.__events_time.items():
+				print(f'{key}: {value * 1000:.0f} ms', file=output)
+		else:
+			print('Time logger:')
+			for key, value in self.__events_time.items():
+				print(f'{key}: {value * 1000:.0f} ms')
 
 

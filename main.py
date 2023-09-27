@@ -9,11 +9,11 @@ from utils import Utils, Constants
 '''
 Algorithm choice
 '''
-matrix_num = 3
+matrix_num = 1
 alg = MPP(matrix_num)
 # alg = Zeidel(matrix_num)
 # alg = GaussJordanoAlg(matrix_num)
-# alg = SCR(matrix_num)
+alg = SCR(matrix_num)
 if (matrix_num == 2 or matrix_num == 4) and (alg.alg_type == Constants.ALG_TYPE_MPP or alg.alg_type == Constants.ALG_TYPE_MZ or alg.alg_type == Constants.ALG_TYPE_SCR):
 	alg.set_solve_to_n_answer(True)
 '''
