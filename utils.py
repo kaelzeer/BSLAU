@@ -64,14 +64,14 @@ class Utils:
 
 
 	@staticmethod
-	def print_step(a : list, f : list, step_row : int, step_col : int, to_zero : bool):
+	def print_step(step : int, a : list, f : list, step_row : int, step_col : int, to_zero : bool):
 		'''
 		Print step of GJ alg. Project scoped
 		'''
 		if to_zero:
-			print(f'\ncalc cell [{step_row},{step_col}] to zero:\n')
+			print(f'\n{step}. calc cell [{step_row},{step_col}] to zero:\n')
 		else:
-			print(f'\ncalc cell [{step_row},{step_col}] to one:\n')
+			print(f'\n{step}. calc cell [{step_row},{step_col}] to one:\n')
 		for row in range(Utils.__print_lim):
 			for col in range(Utils.__print_lim):
 				if row == step_row and col == step_col:
@@ -79,6 +79,25 @@ class Utils:
 				else:
 					print(f' {a[row][col]}  ', end='')
 			print(f'|{f[row]}\n\n', end='')
+
+	@staticmethod
+	def print_step_with_output(step : int, a : list, f : list, step_row : int, step_col : int, to_zero : bool, output : TextIOWrapper):
+		'''
+		Print step of GJ alg. Project scoped
+		'''
+		if to_zero:
+			print(f'\n{step}. calc cell [{step_row},{step_col}] to zero:\n', file=output)
+		else:
+			print(f'\n{step}. calc cell [{step_row},{step_col}] to one:\n', file=output)
+		print('{', file=output)
+		for row in range(Utils.__print_lim):
+			for col in range(Utils.__print_lim):
+				if row == step_row and col == step_col:
+					print(f'\t[{a[row][col]}] ', end='', file=output)
+				else:
+					print(f'\t {a[row][col]}  ', end='', file=output)
+			print(f'|{f[row]}', file=output)
+		print('}\n', file=output)
 
 
 	@staticmethod

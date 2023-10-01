@@ -2,6 +2,7 @@ from utils import Utils, Constants
 from algorithms.base_alg import Algorithm
 
 import numpy as np
+from io import TextIOWrapper
 
 
 class GaussJordanoAlg(Algorithm):
@@ -17,6 +18,7 @@ class GaussJordanoAlg(Algorithm):
 		self.prev_f = np.zeros(self.limit)
 		self.changed_cols = np.zeros(self.limit)
 		self.current_mat_size = 2
+		self.steps_for_print_step = 0
 
 
 	def make_cell_one(self, cell_row : int, cell_col : int):
@@ -35,7 +37,8 @@ class GaussJordanoAlg(Algorithm):
 			for col in range (cell_col, last_col):
 				self.a[cell_row][col] /= divider
 			self.f[cell_row] /= divider
-		# Utils.print_step(self.a, self.f, cell_row, cell_col, False)
+		self.steps_for_print_step += 1
+		Utils.print_step(self.steps_for_print_step, self.a, self.f, cell_row, cell_col, False)
 			
 	
 	def calculate_cell(self, cell_row : int, cell_col : int):
@@ -49,7 +52,42 @@ class GaussJordanoAlg(Algorithm):
 			for col in range(cell_col,last_col):
 				self.a[cell_row][col] += self.a[cell_col][col] * divider
 			self.f[cell_row] += self.f[cell_col] * divider
-		# Utils.print_step(self.a, self.f, cell_row, cell_col, True)
+		self.steps_for_print_step += 1
+		Utils.print_step(self.steps_for_print_step, self.a, self.f, cell_row, cell_col, True)
+
+	def make_cell_one_with_output(self, cell_row : int, cell_col : int, output : TextIOWrapper):
+
+		divider = self.a[cell_row][cell_col]
+		if cell_row != cell_col or divider == 1:
+			return
+		
+		last_col = self.limit if cell_col < Utils.NMAX else Utils.NMAX
+		if divider == 0:
+			non_zero_element_index = self.get_first_non_zero_col(cell_row, cell_col + 1)
+			self.a[cell_row], self.a[non_zero_element_index] = self.a[non_zero_element_index], self.a[cell_row]
+			divider = self.a[cell_row][cell_col]
+		
+		if divider != 1:
+			for col in range (cell_col, last_col):
+				self.a[cell_row][col] /= divider
+			self.f[cell_row] /= divider
+		self.steps_for_print_step += 1
+		Utils.print_step_with_output(self.steps_for_print_step, self.a, self.f, cell_row, cell_col, False, output)
+			
+	
+	def calculate_cell_with_output(self, cell_row : int, cell_col : int, output : TextIOWrapper):
+
+		if cell_row == cell_col or self.a[cell_col][cell_col] != 1.0:
+			self.make_cell_one(cell_col, cell_col)
+
+		last_col = self.limit if cell_col < Utils.NMAX else Utils.NMAX
+		if self.a[cell_row][cell_col] != 0:
+			divider = -self.a[cell_row][cell_col]
+			for col in range(cell_col,last_col):
+				self.a[cell_row][col] += self.a[cell_col][col] * divider
+			self.f[cell_row] += self.f[cell_col] * divider
+		self.steps_for_print_step += 1
+		Utils.print_step_with_output(self.steps_for_print_step, self.a, self.f, cell_row, cell_col, True, output)
 
 
 	def get_first_non_zero_col(self, row : int, first_col : int)->int:
@@ -91,7 +129,7 @@ class GaussJordanoAlg(Algorithm):
 				cur_f_row = self.f[cur_row]
 				d = abs(cur_f_row - prev_f_row)
 				self.f_check = self.f
-				# print(f'row check:\n row: {cur_row}, col: {cur_col}, matrix size: {self.current_mat_size}, prev: {prev_f_row}, cur: {cur_f_row} d: {d}\n')
+				print(f'row check:\n row: {cur_row}, col: {cur_col}, matrix size: {self.current_mat_size}, prev: {prev_f_row}, cur: {cur_f_row} d: {d}\n')
 				if cur_col >= last_col and self.current_mat_size < self.limit:
 					self.current_mat_size += 1
 				
@@ -116,6 +154,64 @@ class GaussJordanoAlg(Algorithm):
 				print(f'last_mat_size: {self.current_mat_size}')
 				break
 			
+	
+	def solve_with_output(self, output : TextIOWrapper):
+
+		d = 0.0
+		cur_row = 0
+		cur_col = 0
+
+		while True:
+			prev_f_row = 0.0
+			cur_f_row = self.f[cur_row]
+			self.steps += 1
+			self.prev_f = np.array(self.f_check)
+
+			while True:
+				last_row = self.current_mat_size - 1
+				last_col = self.current_mat_size - 1
+
+				for col in range(last_col):
+					self.calculate_cell_with_output(last_row, col, output)
+
+				if not cur_row:
+					cur_col = last_col # first row only
+				else:
+					cur_col = self.get_first_non_zero_col(cur_row, cur_row + 1) # other rows starts from main diag
+				# print(f'cur_row : {cur_row}, cur_col : {cur_col}')
+				self.calculate_cell_with_output(cur_row, cur_col, output)
+				self.changed_cols[cur_row] = cur_col
+				prev_f_row = cur_f_row
+				cur_f_row = self.f[cur_row]
+				d = abs(cur_f_row - prev_f_row)
+				self.f_check = self.f
+				print(f'row check:\n row: {cur_row}, col: {cur_col}, matrix size: {self.current_mat_size}, prev: {prev_f_row}, cur: {cur_f_row} d: {d}\n', file=output)
+				if cur_col >= last_col and self.current_mat_size < self.limit:
+					self.current_mat_size += 1
+				
+				# if d < 0.0001:
+				# 	print(f'row check:\n row: {cur_row}, col: {cur_col}, matrix size: {self.current_mat_size}, prev: {prev_f_row}, cur: {cur_f_row} d: {d}\n', file=output)
+				
+				# do-while-emu exit condition
+				if d < Utils.get_first_d(self):
+					print(f'change row, cur_row is {cur_row + 1}', file=output)
+					break
+
+			cur_row += 1
+			cur_col = cur_row + 1
+
+			# do-while-emu exit condition
+			if cur_row > self.answers_length: # or d < 0.001:
+				print(f'end', file=output)
+				break
+			if cur_col >= self.limit:
+				print(f'last_col: {cur_col}', file=output)
+				break
+			if self.current_mat_size >= self.limit:
+				print(f'last_mat_size: {self.current_mat_size}', file=output)
+				break
+			
+	
 
 '''
 	def repeatedSolve(self):
