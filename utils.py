@@ -10,6 +10,8 @@ class Constants:
 	SECOND_MATRIX_LIMIT = 70
 	THIRD_MATRIX_LIMIT = 800
 	FOURTH_MATRIX_LIMIT = 70
+	FIFTH_MATRIX_LIMIT = 100
+	SIXTH_MATRIX_LIMIT = 40
 	'''
 	Second matrix **b** koef
 	'''
@@ -85,28 +87,22 @@ class Utils:
 		Get limit for specific algorithm and matrix. Project scoped
 		'''
 		if algorithm.matrix_num == 1:
-			if algorithm.alg_type == Constants.ALG_TYPE_MPP:
-				return Constants.FIRST_MATRIX_LIMIT
-			elif algorithm.alg_type == Constants.ALG_TYPE_MZ:
-				return Constants.FIRST_MATRIX_LIMIT
-			elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
-				return Constants.FIRST_MATRIX_LIMIT
-			elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-				return Constants.FIRST_MATRIX_LIMIT
+			return Constants.FIRST_MATRIX_LIMIT
 		elif algorithm.matrix_num == 2:
 			return Constants.SECOND_MATRIX_LIMIT
 		elif algorithm.matrix_num == 3:
-			if algorithm.alg_type == Constants.ALG_TYPE_MPP:
-				return Constants.THIRD_MATRIX_LIMIT
-			elif algorithm.alg_type == Constants.ALG_TYPE_MZ:
-				return Constants.THIRD_MATRIX_LIMIT
-			elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
-				return Constants.THIRD_MATRIX_LIMIT
-			elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-				return Constants.THIRD_MATRIX_LIMIT
+			return Constants.THIRD_MATRIX_LIMIT
 		elif algorithm.matrix_num == 4:
 			return Constants.FOURTH_MATRIX_LIMIT
-		return Constants.BASE_MATRIX_LIMIT
+		elif algorithm.matrix_num == 5:
+			return Constants.FIFTH_MATRIX_LIMIT
+		elif algorithm.matrix_num == 6:
+			return Constants.SIXTH_MATRIX_LIMIT
+		elif algorithm.matrix_num == 7:
+			return Constants.FIRST_MATRIX_LIMIT
+		elif algorithm.matrix_num == 8:
+			return Constants.SECOND_MATRIX_LIMIT
+		return Constants.FIRST_MATRIX_LIMIT
 
 	
 	@staticmethod
@@ -115,23 +111,19 @@ class Utils:
 		Get first delta for specific algorithm and matrix. Project scoped
 		'''
 		if algorithm.alg_type == Constants.ALG_TYPE_MPP:
-			if algorithm.matrix_num == 1:
-				return 0.000001
-			elif algorithm.matrix_num == 2:
-				return 0.000001
-			elif algorithm.matrix_num == 3:
-				return 0.000001
-			elif algorithm.matrix_num == 4:
+			if algorithm.matrix_num == 4:
 				return 0.0025
 		elif algorithm.alg_type == Constants.ALG_TYPE_MZ:
-			return 0.0000001
+			if algorithm.matrix_num == 7:
+				return 1e-6
+			return 1e-7
 		elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
 			if algorithm.matrix_num == 3:
-				return 0.00001
-			return 0.000001
+				return 1e-5
+			return 1e-6
 		elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-			return 0.0000001
-		return 0.000001
+			return 1e-7
+		return 1e-6
 		
 	@staticmethod
 	def get_second_d(algorithm) -> float:
@@ -139,11 +131,11 @@ class Utils:
 		Get second delta for specific algorithm and matrix. Project scoped
 		'''
 		if algorithm.alg_type == Constants.ALG_TYPE_MPP:
-			return 0.001
+			return 1e-3
 		elif algorithm.alg_type == Constants.ALG_TYPE_MZ:
-			return 0.001
+			return 1e-3
 		elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
 			pass
 		elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-			0.001
-		return 0.001
+			1e-3
+		return 1e-3
