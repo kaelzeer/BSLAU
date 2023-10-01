@@ -4,11 +4,8 @@ from time_logger import Time_logger
 import numpy as np
 
 def prac_matrix_alpha(i : int)->float:
-	temp = i * math.pi
-	sss1 = temp
-	sss2 = temp + math.sinh(temp)
-	sss3 = 16 * pow(math.cosh(temp / 2), 2)
-	sss = temp * (temp + math.sinh(temp)) / (16 * pow(math.cosh(temp / 2), 2))
+	temp = i * np.pi
+	sss = temp * (temp + np.sinh(temp)) / (16 * (np.cosh(temp / 2) ** 2))
 	return sss
 
 class Matrix_builder:
@@ -154,18 +151,6 @@ class Matrix_builder:
 		algorithm.f = np.zeros(algorithm.limit)
 		algorithm.a = np.zeros((algorithm.limit,algorithm.limit),np.double)
 
-		n = 1 # temp
-		phi = 1 # algorithm.b5 / algorithm.a5
-		n_pi_phi = n * math.pi # * phi
-		alpha_n = (n * math.pi / 16) * (n_pi_phi + math.sinh(n_pi_phi)) / pow(math.cosh(n_pi_phi / 2), 2)
-
-		# for i in range(1,algorithm.limit):
-		# 	for j in range(1,algorithm.limit-i):
-		# 		algorithm.a[i,j] = pow(pow(2*i-1,2)/(pow(2*i-1,2)+pow(2*j-1,2)),2)*math.sin((2*j-1)*math.pi/2)
-		# 	algorithm.f[i] = 1
-		# 	algorithm.a[i,i] += prac_matrix_alpha(2*i-1)*math.sin((2*i-1)*math.pi/2)
-
-
 		for i in range(algorithm.limit):
 			for j in range(algorithm.limit-i):
 				algorithm.a[i,j] = pow(pow(2*i+1,2)/(pow(2*i+1,2)+pow(2*j+1,2)),2)*math.sin((2*j+1)*math.pi/2)
@@ -265,7 +250,7 @@ class Matrix_builder:
 				k = 2 * j + 1
 				sss = math.perm(n, k)
 				algorithm.a[j,j+p] = sss
-			algorithm.f[j] = algorithm.b0 ** j / ((1 - algorithm.b0) ** 2)
+			algorithm.f[j] = algorithm.b0 ** j
 			if j != 0:
 				algorithm.f[j] += algorithm.f[j - 1]		
 

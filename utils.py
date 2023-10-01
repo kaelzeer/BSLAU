@@ -46,19 +46,32 @@ class Utils:
 
 
 	@staticmethod
+	def print_mat_to_file(a : list, f : list, output : TextIOWrapper):
+		'''
+		Print matrix method. Project scoped
+		'''
+		for row in range(Utils.__print_lim):
+			for col in range(Utils.__print_lim):
+				print(f'{a[row][col]} ', end='', file=output)
+			print(f'|{f[row]}\n\n', end='', file=output)
+
+
+	@staticmethod
 	def print_answers(x : list, ss : int, to_file : bool, output : TextIOWrapper):
 		'''
 		Print answers of system equation. Project scoped
 		'''
+		formatted_x = ['{:.20f}'.format(num) for num in x]
+
 		if to_file:
 			print(f's={ss}', file=output)
 			for i in range(Utils.__print_lim):
-				print(x[i], end=' ', file=output)
+				print(formatted_x[i], end=' ', file=output)
 			print('', file=output)
 		else:
 			print(f's={ss}')
 			for i in range(Utils.__print_lim):
-				print(x[i], end=' ')
+				print(formatted_x[i], end=' ')
 			print()
 			
 
@@ -88,6 +101,8 @@ class Utils:
 		if to_zero:
 			print(f'\n{step}. calc cell [{step_row},{step_col}] to zero:\n', file=output)
 		else:
+			if step_row == 5 and step_col == 5:
+				todo = True
 			print(f'\n{step}. calc cell [{step_row},{step_col}] to one:\n', file=output)
 		print('{', file=output)
 		for row in range(Utils.__print_lim):

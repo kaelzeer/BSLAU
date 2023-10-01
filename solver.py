@@ -5,21 +5,27 @@ from algorithms.scr import SCR
 
 from time_logger import Time_logger
 from utils import Utils, Constants
+
+
 '''
 Solve new matrixes
 '''
-
-
 with open('solver.txt', 'w') as output:
 
-	matrix_num = 6
+	matrix_num = 5
 	print(f'Matrix: {matrix_num}')
 	print(f'Matrix: {matrix_num}', file=output)
 
-	alg = GaussJordanoAlg(matrix_num)
+	alg = SCR(matrix_num)
+
+	# SCR matrix 8
+	# alg.set_solve_to_n_answer(True)
+
+	Utils.print_mat_to_file(alg.a, alg.f, output)
 	
 	Time_logger.get_instance().start_timer_for_event('algorithm_solve')
-	alg.solve_with_output(output)
+	alg.solve()
+	# alg.solve_with_output(output) # GJ with steps
 	Time_logger.get_instance().mark_timestamp_for_event('algorithm_solve')
 
 	if alg.alg_type == Constants.ALG_TYPE_MPP or alg.alg_type == Constants.ALG_TYPE_MZ:
