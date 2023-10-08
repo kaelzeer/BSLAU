@@ -156,6 +156,10 @@ class Utils:
 				return 1e-5
 			return 1e-6
 		elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
+			if algorithm.matrix_num == 5:
+				return 1e-20
+			if algorithm.matrix_num == 8:
+				return 1e-20
 			return 1e-7
 		return 1e-6
 		
@@ -171,5 +175,9 @@ class Utils:
 		elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
 			pass
 		elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-			1e-3
+			if algorithm.matrix_num == 5:
+				return 1e-8
+			if algorithm.matrix_num == 8:
+				return 1e-20
+			return 1e-3
 		return 1e-3

@@ -3,7 +3,7 @@ from algorithms.base_alg import Algorithm
 from time_logger import Time_logger
 
 import numpy as np
-from scipy.linalg import lu
+# from scipy.linalg import lu
 
 class SCR(Algorithm):
 	def __init__(self, matrix_num : int = 1) -> None:
@@ -14,6 +14,10 @@ class SCR(Algorithm):
 
 		self.b = np.zeros((self.limit,self.limit),np.double)
 		self.c = np.zeros((self.limit,self.limit),np.double)
+		
+		# from lu()
+		# self.b1 = np.zeros((self.limit,self.limit),np.double)
+		# self.c1 = np.zeros((self.limit,self.limit),np.double)
 
 		Time_logger.get_instance().start_timer_for_event('SCR matrix division')
 		self.build_triangle_matrix()
@@ -25,51 +29,22 @@ class SCR(Algorithm):
 
 	def build_triangle_matrix(self):
 
-		p, self.b, self.c = lu(self.a)
+		# p1, self.b1, self.c1 = lu(self.a)
+		# ldu = np.matmul(self.b1,self.c1)
 
-		print(f'p:\n')
-		for i in range(10):
-			for j in range(10):
-				print(p[i,j], end=' ')
-			print()
-		print(f'p:\n')
+		for i in range(self.limit):
+			for j in range(self.limit):
+				if i <= j:
+					sum_b_c_i = 0
 
-		print(f'b:\n')
-		for i in range(10):
-			for j in range(10):
-				print(self.b[i,j], end=' ')
-			print()
-		print(f'b:\n')
-
-		print(f'c:\n')
-		for i in range(10):
-			for j in range(10):
-				print(self.b[i,j], end=' ')
-			print()
-		print(f'c:\n')
-
-		ldu = np.matmul(self.b,self.c)
-
-		print(f'ldu:\n')
-		for i in range(10):
-			for j in range(10):
-				print(ldu[i,j], end=' ')
-			print()
-		print(f'ldu:\n')
-
-		# for i in range(self.limit):
-		# 	for j in range(self.limit):
-		# 		if i <= j:
-		# 			sum_b_c_i = 0
-
-		# 			for k in range(i):
-		# 				sum_b_c_i += self.b[i,k] * self.c[k,j]
-		# 			self.c[i,j] = self.a[i,j] - sum_b_c_i
-		# 		if i >= j:
-		# 			sum_b_c_j = 0
-		# 			for k in range(j):
-		# 				sum_b_c_j += self.b[i,k] * self.c[k,j]
-		# 			self.b[i,j] = (self.a[i,j] - sum_b_c_j) / self.c[j,j]
+					for k in range(i):
+						sum_b_c_i += self.b[i,k] * self.c[k,j]
+					self.c[i,j] = self.a[i,j] - sum_b_c_i
+				if i >= j:
+					sum_b_c_j = 0
+					for k in range(j):
+						sum_b_c_j += self.b[i,k] * self.c[k,j]
+					self.b[i,j] = (self.a[i,j] - sum_b_c_j) / self.c[j,j]
 		
 		# print(f'b:\n')
 		# for i in range(10):
