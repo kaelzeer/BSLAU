@@ -146,34 +146,19 @@ class Matrix_builder:
 
 
 	@staticmethod
-	def build_prac_matrix(algorithm, matmul : bool = True) -> None:
+	def build_prac_matrix(algorithm) -> None:
 		
 		algorithm.f = np.zeros(algorithm.limit)
 		algorithm.a = np.zeros((algorithm.limit,algorithm.limit),np.double)
 
 		for i in range(algorithm.limit):
-			for j in range(algorithm.limit-i):
-				algorithm.a[i,j] = pow(pow(2*i+1,2)/(pow(2*i+1,2)+pow(2*j+1,2)),2)*math.sin((2*j+1)*math.pi/2)
+			for j in range(algorithm.limit):
+				algorithm.a[i,j] = pow(pow(2*(i+1)-1,2)/(pow(2*(i+1)-1, 2)+pow(2*(j+1)-1, 2)),2)*math.sin((2*(j+1)-1)*math.pi/2)
 			algorithm.f[i] = 1
-			algorithm.a[i,i] += prac_matrix_alpha(2*i+1)*math.sin((2*i+1)*math.pi/2)
+			algorithm.a[i,i] = algorithm.a[i,i] + prac_matrix_alpha(2*(i+1)-1)*math.sin((2*(i+1)-1)*math.pi/2)
 
 		print('Original matrix:')
 		Utils.print_mat(algorithm.a, algorithm.f)
-		if matmul:
-			lower_triangle_mat = np.zeros((algorithm.limit,algorithm.limit))
-
-			for i in range(algorithm.limit):
-				for j in range(algorithm.limit):
-					if i >= j:
-						lower_triangle_mat[i,j] = 1
-
-			print('lower triangle matrix:')
-			Utils.print_mat(lower_triangle_mat, algorithm.f)
-			algorithm.a = np.matmul(lower_triangle_mat,algorithm.a)
-
-		print('lower_triangle * matrix:')
-		Utils.print_mat(algorithm.a, algorithm.f)
-
 
 	@staticmethod
 	def build_re_first_matrix(algorithm, matmul : bool = True) -> None:
