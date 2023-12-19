@@ -138,7 +138,7 @@ class Utils:
             return Constants.FOURTH_MATRIX_LIMIT
         elif algorithm.matrix_num == 5:
             if algorithm.alg_type == Constants.ALG_TYPE_NSCR:
-                return 10
+                return 15
             return Constants.FIFTH_MATRIX_LIMIT
         elif algorithm.matrix_num == 6:
             return Constants.SIXTH_MATRIX_LIMIT
