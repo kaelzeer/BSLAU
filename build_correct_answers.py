@@ -8,9 +8,12 @@ from matrix_builder import Matrix_builder
 import numpy as np
 import math
 
+
 def custom_formatter(x):
-    return f"{x:.20f}" # only for matrix 8
-    return f"{x:.10f}" # for other matrixes
+    return f"{x:.20f}"  # only for matrix 8
+    return f"{x:.10f}"  # for other matrixes
+
+
 np.set_printoptions(formatter={'float': custom_formatter})
 
 '''
