@@ -19,11 +19,12 @@ with open('solver.txt', 'w') as output:
 
     alg = LUGJ(matrix_num)
     # alg = SCR(matrix_num)
+    # alg = GaussJordanoAlg(matrix_num)
 
     # SCR matrix 8
     # alg.set_solve_to_n_answer(True)
 
-    Utils.print_mat_to_file(alg.a, alg.f, output)
+    # Utils.print_mat_to_file(alg.a, alg.f, output)
 
     # Time_logger.get_instance().start_timer_for_event('algorithm_solve')
     alg.solve()
