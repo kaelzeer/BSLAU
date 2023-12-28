@@ -7,21 +7,19 @@ import numpy as np
 np.set_printoptions(precision=8, suppress=True)
 
 
-class LUGJ(Algorithm):
+class LUGJF(Algorithm):
     def __init__(self, matrix_num: int = 1) -> None:
 
         super().__init__(matrix_num)
+        self.limit = 100
         self.alg_type = Constants.ALG_TYPE_NSCR
         super().post_init()
-
-        self.b_orig = np.zeros((self.limit, self.limit), np.double)
-        self.c_orig = np.zeros((self.limit, self.limit), np.double)
 
         self.b = np.zeros((self.limit, self.limit), np.double)
         self.c = np.zeros((self.limit, self.limit), np.double)
 
         self.y = np.zeros(self.limit)
-        self.f_orig = np.ones(self.limit)
+        self.x = np.zeros(self.limit)
 
         self.initial_limit = 10
 
@@ -67,79 +65,45 @@ class LUGJ(Algorithm):
                 return col
         return -1
 
-    def build_b_and_c_matrix(self, n: int) -> None:
+    def build_triangle_matrix(self):
 
-        for i in range(n):
-            sum_b_c_i = 0
-            for k in range(i):
-                sum_b_c_i += self.b_orig[i, k] * self.c_orig[k, n]
-            self.c_orig[i, n] = self.a[i, n] - sum_b_c_i
-            if i:
-                pass
+        for i in range(self.limit):
+            for j in range(self.limit):
+                if i <= j:
+                    sum_b_c_i = 0
 
-        for j in range(n):
-            sum_b_c_j = 0
-            for k in range(j):
-                sum_b_c_j += self.b_orig[n, k] * self.c_orig[k, j]
-            self.b_orig[n, j] = (self.a[n, j] - sum_b_c_j) / self.c_orig[j, j]
+                    for k in range(i):
+                        sum_b_c_i += self.b[i, k] * self.c[k, j]
+                    self.c[i, j] = self.a[i, j] - sum_b_c_i
+                if i >= j:
+                    sum_b_c_j = 0
+                    for k in range(j):
+                        sum_b_c_j += self.b[i, k] * self.c[k, j]
+                    self.b[i, j] = (self.a[i, j] - sum_b_c_j) / self.c[j, j]
 
-        sum_b_c_n = 0
-        for k in range(n):
-            sum_b_c_n += self.b_orig[n, k] * self.c_orig[k, n]
-        self.c_orig[n, n] = self.a[n, n] - sum_b_c_n
-        self.b_orig[n, n] = (self.a[n, n] - sum_b_c_n) / self.c_orig[n, n]
-        # self.b[n, n] = self.b_orig[n, n]
-        # self.c[n, n] = self.c_orig[n, n]
+        for i in range(self.limit):
+            for left_lower_col in range(i):
+                if self.b[i, left_lower_col] != 0:
+                    divider = -self.b[i][left_lower_col]
+                    for inner_col in range(left_lower_col, i):
+                        self.b[i][inner_col] += self.b[left_lower_col][inner_col] * divider
+                    self.f[i] += self.f[left_lower_col] * divider
 
-        # for i in range(n):
-        #     self.c[n, i] = self.c_orig[n, i]
-        #     self.c[i, n] = self.c_orig[i, n]
-        #     self.b[n, i] = self.b_orig[n, i]
-        #     self.b[i, n] = self.b_orig[i, n]
-
-    def build_b_and_c_matrix_without_orig(self, n: int) -> None:
-
-        for i in range(n):
-            sum_b_c_i = 0
-            for k in range(i):
-                sum_b_c_i += self.b[i, k] * self.c[k, n]
-            self.c[i, n] = self.a[i, n] - sum_b_c_i
-            if i:
-                pass
-
-        for j in range(n):
-            sum_b_c_j = 0
-            for k in range(j):
-                sum_b_c_j += self.b[n, k] * self.c[k, j]
-            self.b[n, j] = (self.a[n, j] - sum_b_c_j) / self.c[j, j]
-
-        sum_b_c_n = 0
-        for k in range(n):
-            sum_b_c_n += self.b[n, k] * self.c[k, n]
-        self.c[n, n] = self.a[n, n] - sum_b_c_n
-        self.b[n, n] = (self.a[n, n] - sum_b_c_n) / self.c[n, n]
+            if self.b[i, i]:
+                self.y[i] = self.f[i] / self.b[i, i]
 
     def solve(self):
+        self.build_triangle_matrix()
 
         Time_logger.get_instance().start_timer_for_event('SCR matrix division')
 
         self.c_delta = np.zeros(self.limit)
         d = 1.0
+
         row = 0
 
         while True:
             print(f'row: {row}')
-            self.build_b_and_c_matrix_without_orig(row)
-
-            for left_lower_col in range(row):
-                if self.b[row, left_lower_col] != 0:
-                    divider = -self.b[row][left_lower_col]
-                    for inner_col in range(left_lower_col, row):
-                        self.b[row][inner_col] += self.b[left_lower_col][inner_col] * divider
-                    self.f[row] += self.f[left_lower_col] * divider
-
-            if self.b[row, row]:
-                self.y[row] = self.f[row] / self.b[row, row]
 
             # work with self.c moving row by row starting with last_row to 0
 
@@ -176,18 +140,17 @@ class LUGJ(Algorithm):
                         f'c before: {initial_c_value} c after: {self.c[cur_row, cur_col]}')
                     print(f'calculated this step: {calculated_this_step}')
                     if (calculated_this_step):
-                        print(f'd: {d}')
-
-            print(f'{row} c\n')
-            for i in range(10):
-                for j in range(10):
-                    print(f'{self.c[i, j]} ', end='')
-                print()
-
+                        print(f'\nd: {d}')
+                    print(f'row: {row} c\n')
+                    for i in range(10):
+                        for j in range(10):
+                            print(f'{self.c[i, j]} ', end='')
+                        print()
+                    todo = 1
             row += 1
 
             # do-while-emu exit condition
-            if d < 1e-10 or row > self.limit:  # todo: move d to utils
+            if d < 1e-9 or row > self.limit:  # todo: move d to utils
                 break
 
         Time_logger.get_instance().mark_timestamp_for_event('SCR matrix division')
