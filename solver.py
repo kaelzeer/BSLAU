@@ -4,6 +4,7 @@ from algorithms.gj import GaussJordanoAlg
 from algorithms.scr import SCR
 from algorithms.lu_gj import LUGJ
 from algorithms.lu_gj_fixed import LUGJF
+from algorithms.lu_gj_podstanovka import LUGJP
 
 from time_logger import Time_logger
 from utils import Utils, Constants
@@ -18,7 +19,7 @@ with open('solver.txt', 'w') as output:
     print(f'Matrix: {matrix_num}')
     print(f'Matrix: {matrix_num}', file=output)
 
-    alg = LUGJ(matrix_num)
+    alg = LUGJP(matrix_num)
     # alg = LUGJF(matrix_num)
     # alg = SCR(matrix_num)
     # alg = GaussJordanoAlg(matrix_num)

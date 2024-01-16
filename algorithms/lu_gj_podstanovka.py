@@ -7,7 +7,7 @@ import numpy as np
 np.set_printoptions(precision=8, suppress=True)
 
 
-class LUGJ(Algorithm):
+class LUGJP(Algorithm):
     def __init__(self, matrix_num: int = 1) -> None:
 
         super().__init__(matrix_num)
@@ -73,48 +73,31 @@ class LUGJ(Algorithm):
         for i in range(n):
             sum_b_c_i = 0
             for k in range(i):
-                sum_b_c_i += self.b_orig[i, k] * self.c_orig[k, n]
+                sum_b_c_i += self.b[i, k] * self.c_orig[k, n]
             self.c_orig[i, n] = self.a[i, n] - sum_b_c_i
 
         for j in range(n):
             sum_b_c_j = 0
             for k in range(j):
-                sum_b_c_j += self.b_orig[n, k] * self.c_orig[k, j]
-            self.b_orig[n, j] = (self.a[n, j] - sum_b_c_j) / self.c_orig[j, j]
+                sum_b_c_j += self.b[n, k] * self.c_orig[k, j]
+            self.b[n, j] = (self.a[n, j] - sum_b_c_j) / self.c_orig[j, j]
 
         sum_b_c_n = 0
         for k in range(n):
-            sum_b_c_n += self.b_orig[n, k] * self.c_orig[k, n]
+            sum_b_c_n += self.b[n, k] * self.c_orig[k, n]
         self.c_orig[n, n] = self.a[n, n] - sum_b_c_n
-        self.b_orig[n, n] = (self.a[n, n] - sum_b_c_n) / self.c_orig[n, n]
-        self.b[n, n] = self.b_orig[n, n]
+        self.b[n, n] = (self.a[n, n] - sum_b_c_n) / self.c_orig[n, n]
         self.c[n, n] = self.c_orig[n, n]
 
         for i in range(n):
-            self.c[n, i] = self.c_orig[n, i]
             self.c[i, n] = self.c_orig[i, n]
-            self.b[n, i] = self.b_orig[n, i]
-            self.b[i, n] = self.b_orig[i, n]
 
-    def build_b_and_c_matrix_without_orig(self, n: int) -> None:
+    def calculate_y_using_podstanovka(self, row):
 
-        for i in range(n):
-            sum_b_c_i = 0
-            for k in range(i):
-                sum_b_c_i += self.b[i, k] * self.c[k, n]
-            self.c[i, n] = self.a[i, n] - sum_b_c_i
-
-        for j in range(n):
-            sum_b_c_j = 0
-            for k in range(j):
-                sum_b_c_j += self.b[n, k] * self.c[k, j]
-            self.b[n, j] = (self.a[n, j] - sum_b_c_j) / self.c[j, j]
-
-        sum_b_c_n = 0
-        for k in range(n):
-            sum_b_c_n += self.b[n, k] * self.c[k, n]
-        self.c[n, n] = self.a[n, n] - sum_b_c_n
-        self.b[n, n] = (self.a[n, n] - sum_b_c_n) / self.c[n, n]
+        s = 0
+        for left_lower_col in range(row):
+            s += self.b[row][left_lower_col] * self.y[left_lower_col]
+        self.y[row] = (self.f[row] - s) / self.b[row][row]
 
     def solve(self):
 
@@ -125,47 +108,11 @@ class LUGJ(Algorithm):
         row = 0
 
         while True:
-            print(f'row: {row}')
+            print(f'solve: row: {row}')
             # self.build_b_and_c_matrix_without_orig(row)
             self.build_b_and_c_matrix(row)
 
-            # for left_lower_col in range(row):
-            #     if row == left_lower_col:  # on main diagonal
-            #         if self.b[row, left_lower_col] == 1:  # opt
-            #             print()
-            #             continue
-            #         # for it_col in range(row, row):  # self.limit ?
-            #         self.make_cell_one(self.b, self.f_orig, row, left_lower_col, -1)
-            #         self.f[row] = self.f_orig[row]
-            #         calculated_this_step = True
-            #     else:
-            #         if self.b[row, left_lower_col] == 0:  # opt
-            #             print()
-            #             continue
-            #         self.calculate_cell(self.b, self.f_orig, row, left_lower_col, -1)
-            #         self.f[row] = self.f_orig[row]
-
-            # if self.b[row, row]:
-            #     self.y[row] = self.f_orig[row] / self.b[row, row]
-
-            for left_lower_col in range(row):
-                if self.b[row, left_lower_col] != 0:
-                    divider = -self.b[row][left_lower_col]
-                    for inner_col in range(left_lower_col, row):
-                        self.b[row][inner_col] += self.b[left_lower_col][inner_col] * divider
-                    self.f_orig[row] += self.f_orig[left_lower_col] * divider
-                    self.f[row] = self.f_orig[row]
-
-            if self.b[row, row]:
-                self.y[row] = self.f_orig[row] / self.b[row, row]
-
-            # print(f'{row} b\n')
-            # for i in range(10):
-            #     for j in range(10):
-            #         print(f'{self.b[i, j]} ', end='')
-            #     print(f' | {self.f[i]}')
-
-            todo = 1
+            self.calculate_y_using_podstanovka(row)
 
             # work with self.c moving row by row starting with last_row to 0
 
