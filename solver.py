@@ -18,8 +18,8 @@ with open('solver.txt', 'w') as output:
     print(f'Matrix: {matrix_num}')
     print(f'Matrix: {matrix_num}', file=output)
 
-    # alg = LUGJ(matrix_num)
-    alg = LUGJF(matrix_num)
+    alg = LUGJ(matrix_num)
+    # alg = LUGJF(matrix_num)
     # alg = SCR(matrix_num)
     # alg = GaussJordanoAlg(matrix_num)
 

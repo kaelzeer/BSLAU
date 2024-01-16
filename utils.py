@@ -26,6 +26,7 @@ class Constants:
     ALG_TYPE_GJ = 'GJ'
     ALG_TYPE_SCR = 'SCR'
     ALG_TYPE_NSCR = 'NSCR'
+    ALG_TYPE_LUGJ = 'LUGJ'
 
 
 class Utils:

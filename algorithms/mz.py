@@ -51,7 +51,7 @@ class Zeidel(Algorithm):
                 d = max(d, abs(self.xs[i] - self.xss[i]))
             n += 1
             if d < 0.0012:
-                print(f'n: {self.n}, DD: {d}')
+                print(f'n: {n}, DD: {d}')
 
             # do-while emul condition
             if not self.solve_to_n_answer:
