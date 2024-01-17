@@ -12,7 +12,7 @@ class LUGJF(Algorithm):
 
         super().__init__(matrix_num)
         self.limit = 100
-        self.alg_type = Constants.ALG_TYPE_NSCR
+        self.alg_type = Constants.ALG_TYPE_LUGJF
         super().post_init()
 
         self.b = np.zeros((self.limit, self.limit), np.double)
@@ -23,9 +23,9 @@ class LUGJF(Algorithm):
 
         self.initial_limit = 10
 
-    def make_cell_one(self, cell_row: int, cell_col: int, last_col: int = -1):
+    def make_cell_one(self, matrix: np.array, answers_vec: np.array, cell_row: int, cell_col: int, last_col: int = -1):
 
-        divider = self.c[cell_row][cell_col]
+        divider = matrix[cell_row][cell_col]
         if cell_row != cell_col or divider == 1:
             return
 
@@ -34,28 +34,29 @@ class LUGJF(Algorithm):
         if divider == 0:
             non_zero_element_index = self.get_first_non_zero_col(
                 cell_row, cell_col + 1)
-            self.c[cell_row], self.c[non_zero_element_index] = self.c[non_zero_element_index], self.c[cell_row]
-            divider = self.c[cell_row][cell_col]
+            matrix[cell_row], matrix[non_zero_element_index] = matrix[non_zero_element_index], matrix[cell_row]
+            divider = matrix[cell_row][cell_col]
 
         elif divider != 1:
             for col in range(cell_col, last_col):
-                self.c[cell_row][col] /= divider
-            self.f[cell_row] /= divider
+                matrix[cell_row][col] /= divider
+            answers_vec[cell_row] /= divider
         # self.steps_for_print_step += 1
-        # Utils.print_step(self.steps_for_print_step, self.c, self.f, cell_row, cell_col, False)
+        # Utils.print_step(self.steps_for_print_step, matrix, answers_vec, cell_row, cell_col, False)
 
-    def calculate_cell(self, cell_row: int, cell_col: int, last_col: int = -1):
+    def calculate_cell(self, matrix: np.array, answers_vec: np.array, cell_row: int, cell_col: int, last_col: int = -1):
 
-        if cell_row == cell_col or self.c[cell_col][cell_col] != 1.0:
-            self.make_cell_one(cell_col, cell_col, last_col)
+        if cell_row == cell_col or matrix[cell_col][cell_col] != 1.0:
+            self.make_cell_one(matrix, answers_vec,
+                               cell_col, cell_col, last_col)
 
         if last_col == -1:
             last_col = self.limit if cell_col < Utils.NMAX else Utils.NMAX
-        if self.c[cell_row][cell_col] != 0:
-            divider = -self.c[cell_row][cell_col]
+        if matrix[cell_row][cell_col] != 0:
+            divider = -matrix[cell_row][cell_col]
             for col in range(cell_col, last_col):
-                self.c[cell_row][col] += self.c[cell_col][col] * divider
-            self.f[cell_row] += self.f[cell_col] * divider
+                matrix[cell_row][col] += matrix[cell_col][col] * divider
+            answers_vec[cell_row] += answers_vec[cell_col] * divider
 
     def get_first_non_zero_col(self, row: int, first_col: int) -> int:
 
@@ -92,14 +93,28 @@ class LUGJF(Algorithm):
             if self.b[i, i]:
                 self.y[i] = self.f[i] / self.b[i, i]
 
+    def calculate_y_using_podstanovka(self):
+
+        for row in range(self.limit):
+            s = 0
+            for left_lower_col in range(row):
+                s += self.b[row][left_lower_col] * self.y[left_lower_col]
+            self.y[row] = (self.f[row] - s) / self.b[row][row]
+
     def solve(self):
         self.build_triangle_matrix()
+        self.calculate_y_using_podstanovka()
+
+        print(f'\nwhile-loop begin:')
+        print(f'b | f\n')
+        Utils.print_mat(self.b, self.f, 10)
+        print(f'c | y\n')
+        Utils.print_mat(self.c, self.y, 10)
+        print()
 
         Time_logger.get_instance().start_timer_for_event('SCR matrix division')
 
-        self.c_delta = np.zeros(self.limit)
         d = 1.0
-
         row = 0
 
         while True:
@@ -107,53 +122,53 @@ class LUGJF(Algorithm):
 
             # work with self.c moving row by row starting with last_row to 0
 
-            print(f'iterate coords, row: {row}')
-            for cur_row in range(row - 1, -1, -1):
+            for cur_row in range(row, -1, -1):
                 prev_f_row = -1.0
-                cur_f_row = self.f[cur_row]
-                for cur_col in range(cur_row, row):
+                cur_f_row = self.y[cur_row]
+                for cur_col in range(cur_row, row + 1):
                     calculated_this_step = False
-                    print(
-                        f'cur_row, cur_col : {cur_row}, {cur_col}, ', end='')
+                    # print(
+                    #     f'cur_row, cur_col : {cur_row}, {cur_col}, ', end='')
                     initial_c_value = self.c[cur_row, cur_col]
 
                     if cur_row == cur_col:  # on main diagonal
                         if self.c[cur_row, cur_col] == 1:  # opt
-                            print()
+                            # print()
                             continue
                         # for it_col in range(cur_row, row):  # self.limit ?
-                        self.make_cell_one(cur_row, cur_col, -1)
+                        self.make_cell_one(
+                            self.c, self.y, cur_row, cur_col, -1)
                         calculated_this_step = True
                     else:
                         if self.c[cur_row, cur_col] == 0:  # opt
-                            print()
+                            # print()
                             continue
-                        self.calculate_cell(cur_row, cur_col, -1)
+                        self.calculate_cell(
+                            self.c, self.y, cur_row, cur_col, -1)
                         calculated_this_step = True
 
                     if calculated_this_step:
                         prev_f_row = cur_f_row
-                        cur_f_row = self.f[cur_row]
+                        cur_f_row = self.y[cur_row]
                         d = abs(cur_f_row - prev_f_row)
 
-                    print(
-                        f'c before: {initial_c_value} c after: {self.c[cur_row, cur_col]}')
-                    print(f'calculated this step: {calculated_this_step}')
-                    if (calculated_this_step):
-                        print(f'\nd: {d}')
-                    print(f'row: {row} c\n')
-                    for i in range(10):
-                        for j in range(10):
-                            print(f'{self.c[i, j]} ', end='')
-                        print()
-                    todo = 1
+            print(f'\nwhile-loop end:')
+            print(f'c | y\n')
+            Utils.print_mat(self.c, self.y, row + 1)
+            print()
             row += 1
 
             # do-while-emu exit condition
-            if d < 1e-9 or row > self.limit:  # todo: move d to utils
+            if d < 1e-10 or row >= self.limit:  # todo: move d to utils
                 break
-
         Time_logger.get_instance().mark_timestamp_for_event('SCR matrix division')
+
+        print(f'\nwhile-loop end:')
+        print(f'b | f\n')
+        Utils.print_mat(self.b, self.f, 10)
+        print(f'c | y\n')
+        Utils.print_mat(self.c, self.y, 10)
+        print()
 
         print(f'b:\n{self.b}')
         print(f'c:\n{self.c}')

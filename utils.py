@@ -27,6 +27,8 @@ class Constants:
     ALG_TYPE_SCR = 'SCR'
     ALG_TYPE_NSCR = 'NSCR'
     ALG_TYPE_LUGJ = 'LUGJ'
+    ALG_TYPE_LUGJF = 'LUGJF'
+    ALG_TYPE_LUGJP = 'LUGJP'
 
 
 class Utils:
@@ -37,15 +39,18 @@ class Utils:
     NMAX = 5000
 
     @staticmethod
-    def print_mat(a: list, f: list):
+    def print_mat(a: list, f: list, forced_n: int = -1):
         '''
         Print matrix method. Project scoped
         '''
         n = 0
-        if len(a) < Utils.__print_lim:
-            n = len(a)
+        if forced_n != -1:
+            n = forced_n
         else:
-            n = Utils.__print_lim
+            if len(a) < Utils.__print_lim:
+                n = len(a)
+            else:
+                n = Utils.__print_lim
         for row in range(n):
             for col in range(n):
                 print(f'{a[row][col]} ', end='')
@@ -75,13 +80,15 @@ class Utils:
 
         if to_file:
             print(f's={ss}', file=output)
+            print(f'answers:', file=output)
             for i in range(Utils.__print_lim):
-                print(formatted_x[i], end=' ', file=output)
+                print(f'  {formatted_x[i]}', file=output)
             print('', file=output)
         else:
             print(f's={ss}')
+            print(f'answers:')
             for i in range(Utils.__print_lim):
-                print(formatted_x[i], end=' ')
+                print(f'  {formatted_x[i]}')
             print()
 
     @staticmethod

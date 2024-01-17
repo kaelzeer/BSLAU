@@ -11,10 +11,9 @@ class LUGJP(Algorithm):
     def __init__(self, matrix_num: int = 1) -> None:
 
         super().__init__(matrix_num)
-        self.alg_type = Constants.ALG_TYPE_LUGJ
+        self.alg_type = Constants.ALG_TYPE_LUGJP
         super().post_init()
 
-        self.b_orig = np.zeros((self.limit, self.limit), np.double)
         self.c_orig = np.zeros((self.limit, self.limit), np.double)
 
         self.b = np.zeros((self.limit, self.limit), np.double)
@@ -22,6 +21,9 @@ class LUGJP(Algorithm):
 
         self.y = np.zeros(self.limit)
         self.f_orig = np.ones(self.limit)
+
+        self.f_check = np.zeros(self.limit)
+        self.prev_f = np.zeros(self.limit)
 
         self.initial_limit = 10
 
@@ -58,7 +60,7 @@ class LUGJP(Algorithm):
             divider = -matrix[cell_row][cell_col]
             for col in range(cell_col, last_col):
                 matrix[cell_row][col] += matrix[cell_col][col] * divider
-            answers_vec[cell_row] += self.f[cell_col] * divider
+            answers_vec[cell_row] += answers_vec[cell_col] * divider
 
     def get_first_non_zero_col(self, row: int, first_col: int) -> int:
 
@@ -103,24 +105,29 @@ class LUGJP(Algorithm):
 
         Time_logger.get_instance().start_timer_for_event('SCR matrix division')
 
-        self.c_delta = np.zeros(self.limit)
+        # todo: think more on delta check
         d = 1.0
         row = 0
-
         while True:
             print(f'solve: row: {row}')
             # self.build_b_and_c_matrix_without_orig(row)
             self.build_b_and_c_matrix(row)
 
-            self.calculate_y_using_podstanovka(row)
+            print(f'\nwhile-loop begin:')
+            # print(f'b | f\n')
+            # Utils.print_mat(self.b, self.f, row + 1)
+            print(f'c | y\n')
+            Utils.print_mat(self.c, self.y, row + 1)
+            print()
 
+            self.calculate_y_using_podstanovka(row)
             # work with self.c moving row by row starting with last_row to 0
 
             # print(f'iterate coords, row: {row}')
-            for cur_row in range(row - 1, -1, -1):
+            for cur_row in range(row, -1, -1):
                 prev_f_row = -1.0
-                cur_f_row = self.f[cur_row]
-                for cur_col in range(cur_row, row):
+                cur_f_row = self.y[cur_row]
+                for cur_col in range(cur_row, row + 1):
                     calculated_this_step = False
                     # print(
                     #     f'cur_row, cur_col : {cur_row}, {cur_col}, ', end='')
@@ -132,19 +139,19 @@ class LUGJP(Algorithm):
                             continue
                         # for it_col in range(cur_row, row):  # self.limit ?
                         self.make_cell_one(
-                            self.c, self.f, cur_row, cur_col, -1)
+                            self.c, self.y, cur_row, cur_col, -1)
                         calculated_this_step = True
                     else:
                         if self.c[cur_row, cur_col] == 0:  # opt
                             # print()
                             continue
                         self.calculate_cell(
-                            self.c, self.f, cur_row, cur_col, -1)
+                            self.c, self.y, cur_row, cur_col, -1)
                         calculated_this_step = True
 
                     if calculated_this_step:
                         prev_f_row = cur_f_row
-                        cur_f_row = self.f[cur_row]
+                        cur_f_row = self.y[cur_row]
                         d = abs(cur_f_row - prev_f_row)
 
                     # print(
@@ -158,13 +165,17 @@ class LUGJP(Algorithm):
             #     for j in range(10):
             #         print(f'{self.c[i, j]} ', end='')
             #     print()
-
+            print(f'\nwhile-loop end:')
+            # print(f'b | f\n')
+            # Utils.print_mat(self.b, self.f, row + 1)
+            print(f'c | y\n')
+            Utils.print_mat(self.c, self.y, row + 1)
+            print()
             row += 1
 
             # do-while-emu exit condition
-            if d < 1e-10 or row > self.limit:  # todo: move d to utils
+            if d < 1e-10 or row >= self.limit:  # todo: move d to utils
                 break
-
         Time_logger.get_instance().mark_timestamp_for_event('SCR matrix division')
 
         print(f'b:\n{self.b}')
