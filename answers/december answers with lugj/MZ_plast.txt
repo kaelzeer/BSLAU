@@ -34,4 +34,4 @@ answers:
 
 Time logger:
 matrix_creation: 15 ms
-algorithm_solve: 16 ms
+algorithm_solve: 0 ms

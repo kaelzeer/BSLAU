@@ -46,19 +46,23 @@ class Zeidel(Algorithm):
                     print(f'n: {n}, d: {d}')
                     break
 
-            d = 0.0
+            dd = 0.0
             for i in range(n):
-                d = max(d, abs(self.xs[i] - self.xss[i]))
+                dd = max(dd, abs(self.xs[i] - self.xss[i]))
             n += 1
-            if d < 0.0012:
-                print(f'n: {n}, DD: {d}')
+            if dd < 0.0012:
+                print(f'n: {n}, DD: {dd}')
 
             # do-while emul condition
             if not self.solve_to_n_answer:
-                if d < Utils.get_second_d(self):
+                if dd < Utils.get_second_d(self):
                     break
             else:
-                if d < Utils.get_second_d(self) and n > 13:
+                if dd < Utils.get_second_d(self) and n > 13:
                     break
             if n >= self.limit:
                 break
+
+        print()
+        print(f'd: {d}')
+        print(f'n: {n}')

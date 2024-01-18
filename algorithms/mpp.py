@@ -48,18 +48,22 @@ class MPP(Algorithm):
                     print(f'n: {self.n}, d: {d}')
                     break
 
-            d = 0.0
+            dd = 0.0
             for i in range(self.n - 1):
-                d = max(d, abs(self.xs[i] - self.xss[i]))
+                dd = max(dd, abs(self.xs[i] - self.xss[i]))
             self.n += 1
-            if d < 0.0012:
-                print(f'n: {self.n}, DD: {d}')
+            if dd < 0.0012:
+                print(f'n: {self.n}, DD: {dd}')
             # do-while-emu exit condition
             if not self.solve_to_n_answer:
-                if d < Utils.get_second_d(self):
+                if dd < Utils.get_second_d(self):
                     break
             else:
-                if d < Utils.get_second_d(self) and self.n > 13:
+                if dd < Utils.get_second_d(self) and self.n > 13:
                     break
             if self.n >= self.limit:
                 break
+
+        print()
+        print(f'd: {d}')
+        print(f'n: {self.n}')

@@ -33,5 +33,5 @@ answers:
   0.01017969428292590101
 
 Time logger:
-matrix_creation: 16 ms
-algorithm_solve: 78 ms
+matrix_creation: 31 ms
+algorithm_solve: 62 ms

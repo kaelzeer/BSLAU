@@ -82,16 +82,16 @@ class LUGJF(Algorithm):
                         sum_b_c_j += self.b[i, k] * self.c[k, j]
                     self.b[i, j] = (self.a[i, j] - sum_b_c_j) / self.c[j, j]
 
-        for i in range(self.limit):
-            for left_lower_col in range(i):
-                if self.b[i, left_lower_col] != 0:
-                    divider = -self.b[i][left_lower_col]
-                    for inner_col in range(left_lower_col, i):
-                        self.b[i][inner_col] += self.b[left_lower_col][inner_col] * divider
-                    self.f[i] += self.f[left_lower_col] * divider
+        # for i in range(self.limit):
+        #     for left_lower_col in range(i):
+        #         if self.b[i, left_lower_col] != 0:
+        #             divider = -self.b[i][left_lower_col]
+        #             for inner_col in range(left_lower_col, i):
+        #                 self.b[i][inner_col] += self.b[left_lower_col][inner_col] * divider
+        #             self.f[i] += self.f[left_lower_col] * divider
 
-            if self.b[i, i]:
-                self.y[i] = self.f[i] / self.b[i, i]
+        #     if self.b[i, i]:
+        #         self.y[i] = self.f[i] / self.b[i, i]
 
     def calculate_y_using_podstanovka(self):
 
@@ -102,17 +102,18 @@ class LUGJF(Algorithm):
             self.y[row] = (self.f[row] - s) / self.b[row][row]
 
     def solve(self):
+        Time_logger.get_instance().start_timer_for_event('SCR matrix division')
         self.build_triangle_matrix()
-        self.calculate_y_using_podstanovka()
 
         print(f'\nwhile-loop begin:')
         print(f'b | f\n')
-        Utils.print_mat(self.b, self.f, 10)
+        Utils.print_mat(self.b, self.f, 5, 6)
         print(f'c | y\n')
-        Utils.print_mat(self.c, self.y, 10)
+        Utils.print_mat(self.c, self.y, 5, 6)
         print()
 
-        Time_logger.get_instance().start_timer_for_event('SCR matrix division')
+        self.calculate_y_using_podstanovka()
+        Time_logger.get_instance().mark_timestamp_for_event('SCR matrix division')
 
         d = 1.0
         row = 0
@@ -152,25 +153,27 @@ class LUGJF(Algorithm):
                         cur_f_row = self.y[cur_row]
                         d = abs(cur_f_row - prev_f_row)
 
-            print(f'\nwhile-loop end:')
-            print(f'c | y\n')
-            Utils.print_mat(self.c, self.y, row + 1)
-            print()
+            # print(f'\nwhile-loop end:')
+            # print(f'c | y\n')
+            # Utils.print_mat(self.c, self.y, row + 1)
+            # print()
             row += 1
 
             # do-while-emu exit condition
             if d < 1e-10 or row >= self.limit:  # todo: move d to utils
                 break
-        Time_logger.get_instance().mark_timestamp_for_event('SCR matrix division')
 
-        print(f'\nwhile-loop end:')
-        print(f'b | f\n')
-        Utils.print_mat(self.b, self.f, 10)
-        print(f'c | y\n')
-        Utils.print_mat(self.c, self.y, 10)
-        print()
+        # print(f'\nwhile-loop end:')
+        # print(f'b | f\n')
+        # Utils.print_mat(self.b, self.f, 10)
+        # print(f'c | y\n')
+        # Utils.print_mat(self.c, self.y, 10)
+        # print()
 
-        print(f'b:\n{self.b}')
-        print(f'c:\n{self.c}')
-        print(f'y:\n{self.y}')
-        print(f'f:\n{self.f}')
+        print(f'n: {row}')
+        print(f'd: {d}')
+
+        # print(f'b:\n{self.b}')
+        # print(f'c:\n{self.c}')
+        # print(f'y:\n{self.y}')
+        # print(f'f:\n{self.f}')

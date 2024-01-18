@@ -33,6 +33,6 @@ answers:
   0.01018258714666088124
 
 Time logger:
-matrix_creation: 15 ms
+matrix_creation: 32 ms
 SCR matrix division: 94 ms
-algorithm_solve: 422 ms
+algorithm_solve: 328 ms

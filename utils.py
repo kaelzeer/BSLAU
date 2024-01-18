@@ -39,7 +39,7 @@ class Utils:
     NMAX = 5000
 
     @staticmethod
-    def print_mat(a: list, f: list, forced_n: int = -1):
+    def print_mat(a: list, f: list, forced_n: int = -1, precision: int = -1):
         '''
         Print matrix method. Project scoped
         '''
@@ -53,8 +53,14 @@ class Utils:
                 n = Utils.__print_lim
         for row in range(n):
             for col in range(n):
-                print(f'{a[row][col]} ', end='')
-            print(f'|{f[row]}\n\n', end='')
+                if precision == -1:
+                    print(f'{a[row][col]} ', end='')
+                else:
+                    print(f'{a[row][col]:.{precision}f} ', end='')
+            if precision == -1:
+                print(f'|{f[row]}\n\n', end='')
+            else:
+                print(f'|{f[row]:.{precision}f}\n\n', end='')
 
     @staticmethod
     def print_mat_to_file(a: list, f: list, output: TextIOWrapper):
@@ -173,12 +179,12 @@ class Utils:
                 return 1e-5
             return 1e-6
         elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-            if algorithm.matrix_num == 5:
-                return 1e-20
+            # if algorithm.matrix_num == 5:
+            #     return 1e-20
             if algorithm.matrix_num == 8:
                 return 1e-20
             return 1e-7
-        return 1e-6
+        return 1e-7
 
     @staticmethod
     def get_second_d(algorithm) -> float:
@@ -192,8 +198,8 @@ class Utils:
         elif algorithm.alg_type == Constants.ALG_TYPE_GJ:
             pass
         elif algorithm.alg_type == Constants.ALG_TYPE_SCR:
-            if algorithm.matrix_num == 5:
-                return 1e-8
+            # if algorithm.matrix_num == 5:
+            #     return 1e-8
             if algorithm.matrix_num == 8:
                 return 1e-20
             return 1e-3

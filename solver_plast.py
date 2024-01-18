@@ -16,11 +16,18 @@ Solve new matrixes
 
 matrix_num = 5  # plastinka
 
+# alg = MPP(matrix_num)
+# alg.set_solve_to_n_answer(True)
+
 # alg = Zeidel(matrix_num)
+
 # alg = SCR(matrix_num)
-alg = GaussJordanoAlg(matrix_num)
+
+# alg = GaussJordanoAlg(matrix_num)
+
 # alg = LUGJ(matrix_num)
-# alg = LUGJF(matrix_num)
+
+alg = LUGJF(matrix_num)
 
 filename = 'some_alg_plast.txt'
 

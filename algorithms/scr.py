@@ -119,19 +119,22 @@ class SCR(Algorithm):
                 if (r < Utils.get_first_d(self)) or (j + p >= self.limit):
                     break
 
-            d = 0.0
+            dd = 0.0
             for i in range(j + 1):
-                d = max(d, abs(self.x[i] - self.xss[i]))
+                dd = max(dd, abs(self.x[i] - self.xss[i]))
             # do-while-emu exit condition
-            print(f'D: {d}')
+            print(f'D: {dd}')
             if not self.solve_to_n_answer:
-                if d < Utils.get_second_d(self):
+                if dd < Utils.get_second_d(self):
                     break
             else:
-                if d < Utils.get_second_d(self) and j > 13:
+                if dd < Utils.get_second_d(self) and j > 13:
                     break
             if j >= self.limit - 1:
                 break
             j += 1
 
+        print()
+        print(f'd: {r}')
+        print(f'n: {j}')
         print(f'j+p={maxjp}')

@@ -54,7 +54,7 @@ class Matrix_builder:
         algorithm.f[0] = -1
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
 
     @staticmethod
     def build_second_matrix(algorithm, matmul: bool = True) -> None:
@@ -73,7 +73,7 @@ class Matrix_builder:
                 algorithm.f[j] += algorithm.f[j - 1]
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
         if matmul:
             lower_triangle_mat = np.zeros((algorithm.limit, algorithm.limit))
 
@@ -109,7 +109,7 @@ class Matrix_builder:
             algorithm.f[i] = -1.0 / (4 * (i + 1) - 2)
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
 
     @staticmethod
     def build_fourth_matrix(algorithm, matmul: bool = True) -> None:
@@ -128,7 +128,7 @@ class Matrix_builder:
                 algorithm.f[j] += algorithm.f[j - 1]
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
         if matmul:
             lower_triangle_mat = np.zeros((algorithm.limit, algorithm.limit))
 
@@ -159,7 +159,7 @@ class Matrix_builder:
                 prac_matrix_alpha(2*(i+1)-1)*math.sin((2*(i+1)-1)*math.pi/2)
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
 
     @staticmethod
     def build_f_prac_matrix(algorithm) -> None:
@@ -182,7 +182,7 @@ class Matrix_builder:
                 algorithm.f[j] += algorithm.f[j - 1]
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
         if matmul:
             lower_triangle_mat = np.zeros((algorithm.limit, algorithm.limit))
 
@@ -212,7 +212,7 @@ class Matrix_builder:
                 algorithm.f[j] += algorithm.f[j - 1]
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
         if matmul:
             lower_triangle_mat = np.zeros((algorithm.limit, algorithm.limit))
 
@@ -245,7 +245,7 @@ class Matrix_builder:
                 algorithm.f[j] += algorithm.f[j - 1]
 
         print('Original matrix:')
-        Utils.print_mat(algorithm.a, algorithm.f)
+        Utils.print_mat(algorithm.a, algorithm.f, 6, 6)
         if matmul:
             lower_triangle_mat = np.zeros((algorithm.limit, algorithm.limit))
 
