@@ -1,6 +1,7 @@
 import numpy as np
 
-from matrix_builder import Matrix_builder
+from helpers.matrix_builder import Matrix_builder
+from helpers.matrix_builder_new import NMatrix_builder
 from utils import Utils, Constants
 
 
@@ -20,13 +21,14 @@ class Algorithm:
         self.limit = Utils.get_limit(self)
         # self.a = np.zeros((self.limit,self.limit))
         # self.f = np.zeros(self.limit)
+        self.answers = np.zeros(self.limit)
 
         self.solve_to_n_answer = False
         self.build_matrix()
 
     def build_matrix(self) -> None:
 
-        Matrix_builder.build_matrix(self)
+        NMatrix_builder.build_matrix(self)
 
     def solve(self) -> None:
 

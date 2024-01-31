@@ -1,6 +1,6 @@
 from utils import Utils, Constants
 from algorithms.base_alg import Algorithm
-from time_logger import Time_logger
+from helpers.time_logger import Time_logger
 
 import numpy as np
 # from scipy.linalg import lu
@@ -77,11 +77,11 @@ class SCR(Algorithm):
         y = np.zeros(self.limit)
         maxjp = 0
         j = 0
+        A = np.zeros(self.limit)
 
         while True:
             self.steps += 1
             self.xss = np.array(self.x)
-            A = np.zeros(self.limit)
             A[0] = 1
             p = 0
             # repeat

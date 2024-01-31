@@ -1,9 +1,9 @@
 from algorithms.mpp import MPP
 
-from time_logger import Time_logger
+from helpers.time_logger import Time_logger
 from utils import Utils, Constants
 
-from matrix_builder import Matrix_builder
+from helpers.matrix_builder import Matrix_builder
 
 import numpy as np
 

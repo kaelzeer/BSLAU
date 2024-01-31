@@ -1,4 +1,5 @@
 from io import TextIOWrapper
+import math
 
 
 class Constants:
@@ -6,12 +7,10 @@ class Constants:
     Limits for matrixes
     '''
     BASE_MATRIX_LIMIT = 50
-    FIRST_MATRIX_LIMIT = 800
-    SECOND_MATRIX_LIMIT = 70
-    THIRD_MATRIX_LIMIT = 800
-    FOURTH_MATRIX_LIMIT = 70
-    FIFTH_MATRIX_LIMIT = 100
-    SIXTH_MATRIX_LIMIT = 40
+    FIRST_MATRIX_LIMIT = 100
+    SECOND_MATRIX_LIMIT = 100
+    THIRD_MATRIX_LIMIT = 70
+    FOURTH_MATRIX_LIMIT = 100
     '''
 	Second matrix **b** koef
 	'''
@@ -29,6 +28,7 @@ class Constants:
     ALG_TYPE_LUGJ = 'LUGJ'
     ALG_TYPE_LUGJF = 'LUGJF'
     ALG_TYPE_LUGJP = 'LUGJP'
+    ALG_TYPE_NA = 'NA'
 
 
 class Utils:
@@ -78,21 +78,23 @@ class Utils:
             print(f'|{f[row]}\n\n', end='', file=output)
 
     @staticmethod
-    def print_answers(x: list, ss: int, to_file: bool, output: TextIOWrapper):
+    def print_answers(x: list, answers_title_str: str, ss: int, to_file: bool, output: TextIOWrapper):
         '''
         Print answers of system equation. Project scoped
         '''
         formatted_x = ['{:.20f}'.format(num) for num in x]
 
         if to_file:
-            print(f's={ss}', file=output)
-            print(f'answers:', file=output)
+            if ss != -1:
+                print(f's={ss}', file=output)
+            print(answers_title_str, file=output)
             for i in range(Utils.__print_lim):
                 print(f'  {formatted_x[i]}', file=output)
             print('', file=output)
         else:
-            print(f's={ss}')
-            print(f'answers:')
+            if ss != -1:
+                print(f's={ss}')
+            print(answers_title_str)
             for i in range(Utils.__print_lim):
                 print(f'  {formatted_x[i]}')
             print()
@@ -142,31 +144,23 @@ class Utils:
         '''
         Get limit for specific algorithm and matrix. Project scoped
         '''
-        if algorithm.matrix_num == 1:
-            return Constants.FIRST_MATRIX_LIMIT
-        elif algorithm.matrix_num == 2:
-            return Constants.SECOND_MATRIX_LIMIT
-        elif algorithm.matrix_num == 3:
+        # if algorithm.matrix_num == 1:
+        #     return Constants.FIRST_MATRIX_LIMIT
+        # elif algorithm.matrix_num == 2:
+        #     return Constants.SECOND_MATRIX_LIMIT
+        if algorithm.matrix_num == 3 or algorithm.matrix_num == 8:
             return Constants.THIRD_MATRIX_LIMIT
-        elif algorithm.matrix_num == 4:
-            return Constants.FOURTH_MATRIX_LIMIT
-        elif algorithm.matrix_num == 5:
-            # if algorithm.alg_type == Constants.ALG_TYPE_NSCR:
-            #     return 15
-            return Constants.FIFTH_MATRIX_LIMIT
-        elif algorithm.matrix_num == 6:
-            return Constants.SIXTH_MATRIX_LIMIT
-        elif algorithm.matrix_num == 7:
-            return Constants.FIRST_MATRIX_LIMIT
-        elif algorithm.matrix_num == 8:
-            return Constants.SECOND_MATRIX_LIMIT
-        return Constants.FIRST_MATRIX_LIMIT
+        # elif algorithm.matrix_num == 4:
+        #     return Constants.FOURTH_MATRIX_LIMIT
+        return Constants.BASE_MATRIX_LIMIT
 
     @staticmethod
     def get_first_d(algorithm) -> float:
         '''
         Get first delta for specific algorithm and matrix. Project scoped
         '''
+        return 1e-9
+
         if algorithm.alg_type == Constants.ALG_TYPE_MPP:
             if algorithm.matrix_num == 4:
                 return 0.0025
@@ -191,6 +185,8 @@ class Utils:
         '''
         Get second delta for specific algorithm and matrix. Project scoped
         '''
+        return 1e-4
+
         if algorithm.alg_type == Constants.ALG_TYPE_MPP:
             return 1e-3
         elif algorithm.alg_type == Constants.ALG_TYPE_MZ:
@@ -204,3 +200,10 @@ class Utils:
                 return 1e-20
             return 1e-3
         return 1e-3
+
+    @staticmethod
+    def ch(limit: int, x: float) -> float:
+        s = 0
+        for j in range(limit):
+            s += (x ** (2 * j)) / math.factorial(2 * j)
+        return s

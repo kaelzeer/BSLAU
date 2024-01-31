@@ -1,6 +1,6 @@
 from utils import Utils, Constants
 from algorithms.base_alg import Algorithm
-from time_logger import Time_logger
+from helpers.time_logger import Time_logger
 
 import numpy as np
 
