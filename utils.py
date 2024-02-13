@@ -78,6 +78,36 @@ class Utils:
             print(f'|{f[row]}\n\n', end='', file=output)
 
     @staticmethod
+    def print_matrix_type_and_number(algorithm, output: TextIOWrapper = None):
+
+        print(f'Matrix: {algorithm.matrix_num}')
+        if output:
+            print(f'Matrix: {algorithm.matrix_num}', file=output)
+        if algorithm.matrix_num == 1:
+            print('Gaussian matrix example 1')
+            if output:
+                print('Gaussian matrix example 1', file=output)
+        elif algorithm.matrix_num == 2:
+            print('Gaussian matrix example 2')
+            if output:
+                print('Gaussian matrix example 2', file=output)
+        elif algorithm.matrix_num == 3:
+            print('Gaussian full example 1')
+            if output:
+                print('Gaussian full example 1', file=output)
+        elif algorithm.matrix_num == 4:
+            print('Gaussian full example 2')
+            if output:
+                print('Gaussian full example 2', file=output)
+        elif algorithm.matrix_num == 5:
+            print('Gaussian full example 3')
+            if output:
+                print('Gaussian full example 3', file=output)
+        print()
+        if output:
+            print(file=output)
+
+    @staticmethod
     def print_answers(x: list, answers_title_str: str, ss: int, to_file: bool, output: TextIOWrapper):
         '''
         Print answers of system equation. Project scoped

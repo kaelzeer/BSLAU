@@ -10,62 +10,62 @@ class Solve_builder:
     @staticmethod
     def build_solution(algorithm, output: TextIOWrapper) -> None:
         if algorithm.matrix_num == 1:
-            Solve_builder.build_first_solution(
+            Solve_builder.build_gaussian_example_first_solution(
                 algorithm.answers, algorithm.answers_length, algorithm.b0, output)
         elif algorithm.matrix_num == 2:
-            Solve_builder.build_second_solution(
+            Solve_builder.build_gaussian_example_second_solution(
                 algorithm.answers, algorithm.answers_length, algorithm.b0, output)
         elif algorithm.matrix_num == 3:
-            Solve_builder.build_third_solution(
+            Solve_builder.build_full_example_first_solution(
                 algorithm.answers, algorithm.answers_length, algorithm.b0, output)
         elif algorithm.matrix_num == 4:
+            Solve_builder.build_full_example_second_solution(
+                algorithm.answers, algorithm.answers_length, algorithm.b0, output)
+        elif algorithm.matrix_num == 5:
             Solve_builder.build_prac_solution(
                 algorithm.answers, algorithm.answers_length, algorithm.b0, output)
 
-    # @staticmethod
-    # def test_build_solution(matrix_num, output: TextIOWrapper) -> None:
-    #     answers_length = 10
-    #     answers = np.zeros(answers_length)
-    #     b0 = 1.5
-
-    #     if matrix_num == 1:
-    #         Solve_builder.build_first_solution(
-    #             answers, answers_length, b0, output)
-    #     elif matrix_num == 2:
-    #         Solve_builder.build_second_solution(
-    #             answers, answers_length, b0, output)
-    #     elif matrix_num == 3:
-    #         Solve_builder.build_third_solution(
-    #             answers, answers_length, b0, output)
-    #     elif matrix_num == 4:
-    #         Solve_builder.build_prac_solution(
-    #             answers, answers_length, b0, output)
-
     @staticmethod
-    def build_first_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
-        for j in range(limit):
-            answer[j] = (math.factorial(j + 1) * b ** j) / (1 - b)
-
-        print('Original answers:')
-        Utils.print_answers(answer, 'Original answers:', -1, False, output)
-        Utils.print_answers(answer, 'Original answers:', -1, True, output)
-
-    @staticmethod
-    def build_second_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
-        for j in range(limit):
-            answer[j] = (b ** j) / (1 - b)
-
-        print('Original answers:')
-        Utils.print_answers(answer, 'Original answers:', -1, False, output)
-        Utils.print_answers(answer, 'Original answers:', -1, True, output)
-
-    @staticmethod
-    def build_third_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
+    def build_gaussian_example_first_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
         for j in range(limit):
             answer[j] = (b ** j) / (math.factorial(2 * j + 1)
                                     * Utils.ch(limit, math.sqrt(b)))
 
-        print('Original answers:')
+        Utils.print_answers(answer, 'Original answers:', -1, False, output)
+        Utils.print_answers(answer, 'Original answers:', -1, True, output)
+
+    @staticmethod
+    def build_gaussian_example_second_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
+        for j in range(limit):
+            answer[j] = (b ** j) / (1 - b)
+
+        Utils.print_answers(answer, 'Original answers:', -1, False, output)
+        Utils.print_answers(answer, 'Original answers:', -1, True, output)
+
+    @staticmethod
+    def build_full_example_first_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
+        bi = 1
+        for i in range(limit):
+            answer[i] = bi / (1 - b)
+            bi = bi * b
+
+        # i = 100
+        # print(i, b**i/(1 - b))
+
+        Utils.print_answers(answer, 'Original answers:', -1, False, output)
+        Utils.print_answers(answer, 'Original answers:', -1, True, output)
+
+    # todo
+    @staticmethod
+    def build_full_example_second_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
+        bi = 1
+        for i in range(limit):
+            answer[i] = bi / (1 - b)
+            bi = bi * b
+
+        # i = 100
+        # print(i, b**i/(1 - b))
+
         Utils.print_answers(answer, 'Original answers:', -1, False, output)
         Utils.print_answers(answer, 'Original answers:', -1, True, output)
 
@@ -81,6 +81,15 @@ class Solve_builder:
         answer[7] = 0.0193
         answer[8] = -0.0141
         answer[9] = 0.0103
+
+        Utils.print_answers(answer, 'Original answers:', -1, False, output)
+        Utils.print_answers(answer, 'Original answers:', -1, True, output)
+
+    # old
+    @staticmethod
+    def build_old_first_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
+        for j in range(limit):
+            answer[j] = (math.factorial(j + 1) * b ** j) / (1 - b)
 
         Utils.print_answers(answer, 'Original answers:', -1, False, output)
         Utils.print_answers(answer, 'Original answers:', -1, True, output)

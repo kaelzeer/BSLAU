@@ -2,7 +2,6 @@ from algorithms.mpp import MPP
 from algorithms.mz import Zeidel
 from algorithms.gj import GaussJordanoAlg
 from algorithms.scr import SCR
-# from algorithms.lu_gj_fixed import LUGJF
 from algorithms.new_alg import NA
 
 from helpers.time_logger import Time_logger
@@ -11,7 +10,11 @@ from helpers.solve_builder import Solve_builder
 
 
 '''
-Solve new matrixes
+matrix_num = 1 - gaussian example 1
+matrix_num = 2 - gaussian example 2
+matrix_num = 3 - full example 1
+matrix_num = 4 - full example 2
+matrix_num = 5 - full example 3
 '''
 
 matrix_num = 1
@@ -43,9 +46,7 @@ elif alg.alg_type == Constants.ALG_TYPE_NA:
 
 with open(filename, 'w') as output:
 
-    print(f'Matrix: {matrix_num}')
-    print(f'Matrix: {matrix_num}', file=output)
-
+    Utils.print_matrix_type_and_number(alg, output)
     Utils.print_mat_to_file(alg.a, alg.f, output)
 
     Time_logger.get_instance().start_timer_for_event('algorithm_solve')
