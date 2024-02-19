@@ -12,9 +12,18 @@ class Constants:
     THIRD_MATRIX_LIMIT = 70
     FOURTH_MATRIX_LIMIT = 100
     '''
-	Second matrix **b** koef
+	General matrix **b** koef
 	'''
-    B0 = 1.5
+    # B0 = 1.5  # variant std
+    # B0 = 0.5  # variant 1
+    B0 = 2   # variant 2
+    '''
+    Full matrix 2 **a** koef
+    '''
+    # B0_FM2 = 2    # variant std
+    # A0_FM2 = 0.25  # variant std
+    B0_FM2 = 0.25  # variant 1
+    A0_FM2 = 2    # variant 1
 
     '''
 	Algoritm type enum
@@ -24,11 +33,12 @@ class Constants:
     ALG_TYPE_MZ = 'MZ'
     ALG_TYPE_GJ = 'GJ'
     ALG_TYPE_SCR = 'SCR'
-    ALG_TYPE_NSCR = 'NSCR'
-    ALG_TYPE_LUGJ = 'LUGJ'
-    ALG_TYPE_LUGJF = 'LUGJF'
-    ALG_TYPE_LUGJP = 'LUGJP'
     ALG_TYPE_NA = 'NA'
+
+    '''
+    Print float precision
+    '''
+    PRINT_FLOAT_PRECISION = 5
 
 
 class Utils:
@@ -39,7 +49,11 @@ class Utils:
     NMAX = 5000
 
     @staticmethod
-    def print_mat(a: list, f: list, forced_n: int = -1, precision: int = -1):
+    def get_matrix_count() -> int:
+        return 5
+
+    @staticmethod
+    def print_mat(a: list, f: list, forced_n: int = -1, precision: int = -1, output: TextIOWrapper = None):
         '''
         Print matrix method. Project scoped
         '''
@@ -54,13 +68,20 @@ class Utils:
         for row in range(n):
             for col in range(n):
                 if precision == -1:
-                    print(f'{a[row][col]} ', end='')
-                else:
-                    print(f'{a[row][col]:.{precision}f} ', end='')
+                    precision = Constants.PRINT_FLOAT_PRECISION
+                print(f'{a[row][col]:.{precision}f} ', end='')
+                if output:
+                    print(f'{a[row][col]:.{precision}f} ',
+                          end='', file=output)
             if precision == -1:
                 print(f'|{f[row]}\n\n', end='')
+                if output:
+                    print(f'|{f[row]}\n\n', end='', file=output)
             else:
                 print(f'|{f[row]:.{precision}f}\n\n', end='')
+                if output:
+                    print(f'|{f[row]:.{precision}f}\n\n',
+                          end='', file=output)
 
     @staticmethod
     def print_mat_to_file(a: list, f: list, output: TextIOWrapper):

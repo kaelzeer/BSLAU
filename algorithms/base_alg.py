@@ -12,7 +12,11 @@ class Algorithm:
         self.alg_type = Constants.ALG_TYPE_BASE
         self.answers_length = 10
         self.steps = 0
+        self.a0 = 0
         self.b0 = Constants.B0
+        if matrix_num == 4:
+            self.a0 = Constants.A0_FM2
+            self.b0 = Constants.B0_FM2
         self.matrix_num = matrix_num
         self.limit = Constants.BASE_MATRIX_LIMIT
 

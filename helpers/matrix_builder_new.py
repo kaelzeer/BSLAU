@@ -23,7 +23,7 @@ class NMatrix_builder:
         elif algorithm.matrix_num == 3:
             NMatrix_builder.build_full_example_first(algorithm)
         elif algorithm.matrix_num == 4:
-            NMatrix_builder.build_full_example_first(algorithm)
+            NMatrix_builder.build_full_example_second(algorithm)
         elif algorithm.matrix_num == 5:
             NMatrix_builder.build_prac_matrix(algorithm)
 
@@ -31,7 +31,6 @@ class NMatrix_builder:
 
     @staticmethod
     def build_gaussian_example_first(algorithm) -> None:
-        _is_gauss_matrix = True
         algorithm.f = np.zeros(algorithm.limit)
         algorithm.a = np.zeros(
             (algorithm.limit, algorithm.limit), np.longdouble)
@@ -56,7 +55,6 @@ class NMatrix_builder:
 
     @staticmethod
     def build_gaussian_example_second(algorithm) -> None:
-        _is_gauss_matrix = True
         algorithm.f = np.zeros(algorithm.limit)
         algorithm.a = np.zeros((algorithm.limit, algorithm.limit), np.double)
 
@@ -67,25 +65,9 @@ class NMatrix_builder:
 
     @staticmethod
     def build_full_example_first(algorithm) -> None:
-        _is_gauss_matrix = False
         algorithm.f = np.zeros(algorithm.limit)
         algorithm.a = np.zeros(
             (algorithm.limit, algorithm.limit), np.longdouble)
-
-        bj = 1
-        a = 1
-        for j in range(algorithm.limit):
-            algorithm.f[j] = bj
-            bj = bj * algorithm.b0
-            if j > 0:
-                a = a * (2 * j - 1) * (2 * j)
-            algorithm.a[j, j] = a
-            ap = a
-            for p in range(1, algorithm.limit - j):
-                ap = ap * (2 * j + 2 * p - 1) * (2 * j + 2 * p) / \
-                    ((2 * p - 1) * (2 * p))
-                algorithm.a[j, j+p] = ap
-                algorithm.f[j] = algorithm.b0 ** j
 
         bi = 1
         s = 0
@@ -100,8 +82,30 @@ class NMatrix_builder:
             bi = bi * algorithm.b0
 
     @staticmethod
+    def build_full_example_second(algorithm) -> None:
+        algorithm.f = np.zeros(algorithm.limit)
+        algorithm.a = np.zeros(
+            (algorithm.limit, algorithm.limit), np.longdouble)
+
+        bi = algorithm.b0
+        for i in range(algorithm.limit):
+            if i == 0:
+                algorithm.f[0] = 1
+            else:
+                bi = algorithm.b0*bi
+                algorithm.f[i] = (bi - 1)/(algorithm.b0 - 1)
+            for j in range(0, algorithm.limit):
+                if j == 0:
+                    algorithm.a[i][0] = 1
+                elif i >= j:
+                    algorithm.a[i][j] = 1 + algorithm.a0
+                elif i + 1 == j:
+                    algorithm.a[i][j] = algorithm.a0
+                else:
+                    algorithm.a[i][j] = 0
+
+    @staticmethod
     def build_prac_matrix(algorithm) -> None:
-        _is_gauss_matrix = False
         algorithm.f = np.zeros(algorithm.limit)
         algorithm.a = np.zeros((algorithm.limit, algorithm.limit), np.double)
 
@@ -115,7 +119,6 @@ class NMatrix_builder:
 
     @staticmethod
     def build_old_first_matrix(algorithm) -> None:
-        _is_gauss_matrix = True
         algorithm.f = np.zeros(algorithm.limit)
         algorithm.a = np.zeros((algorithm.limit, algorithm.limit), np.double)
 

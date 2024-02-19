@@ -20,7 +20,7 @@ class Solve_builder:
                 algorithm.answers, algorithm.answers_length, algorithm.b0, output)
         elif algorithm.matrix_num == 4:
             Solve_builder.build_full_example_second_solution(
-                algorithm.answers, algorithm.answers_length, algorithm.b0, output)
+                algorithm.answers, algorithm.answers_length, algorithm.a0, algorithm.b0, output)
         elif algorithm.matrix_num == 5:
             Solve_builder.build_prac_solution(
                 algorithm.answers, algorithm.answers_length, algorithm.b0, output)
@@ -57,10 +57,10 @@ class Solve_builder:
 
     # todo
     @staticmethod
-    def build_full_example_second_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
+    def build_full_example_second_solution(answer: np.array, limit: int, a: float, b: float, output: TextIOWrapper) -> None:
         bi = 1
         for i in range(limit):
-            answer[i] = bi / (1 - b)
+            answer[i] = bi / (1 + a*b)
             bi = bi * b
 
         # i = 100
