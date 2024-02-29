@@ -6,17 +6,19 @@ class Constants:
     '''
     Limits for matrixes
     '''
-    BASE_MATRIX_LIMIT = 50
-    FIRST_MATRIX_LIMIT = 100
-    SECOND_MATRIX_LIMIT = 100
-    THIRD_MATRIX_LIMIT = 70
-    FOURTH_MATRIX_LIMIT = 100
+    BASE_MATRIX_LIMIT = 100
+    FACTORIAL_MATRIX_LIMIT = 80
+    '''
+    Answers array length
+    '''
+    ANSWERS_COUNT = 10
     '''
 	General matrix **b** koef
 	'''
     # B0 = 1.5  # variant std
-    # B0 = 0.5  # variant 1
-    B0 = 2   # variant 2
+    B0 = 0.25   # variant 1
+    # B0 = 0.5  # variant 2
+    # B0 = 0.75   # variant 3
     '''
     Full matrix 2 **a** koef
     '''
@@ -199,8 +201,8 @@ class Utils:
         #     return Constants.FIRST_MATRIX_LIMIT
         # elif algorithm.matrix_num == 2:
         #     return Constants.SECOND_MATRIX_LIMIT
-        if algorithm.matrix_num == 3 or algorithm.matrix_num == 8:
-            return Constants.THIRD_MATRIX_LIMIT
+        if algorithm.matrix_num == 1 or algorithm.matrix_num == 3:
+            return Constants.FACTORIAL_MATRIX_LIMIT
         # elif algorithm.matrix_num == 4:
         #     return Constants.FOURTH_MATRIX_LIMIT
         return Constants.BASE_MATRIX_LIMIT

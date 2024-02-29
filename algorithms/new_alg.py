@@ -39,17 +39,6 @@ class NA(Algorithm):
                         sum_b_c_j += self.b[i, k] * self.c[k, j]
                     self.b[i, j] = (self.a[i, j] - sum_b_c_j) / self.c[j, j]
 
-        # for i in range(self.limit):
-        #     for left_lower_col in range(i):
-        #         if self.b[i, left_lower_col] != 0:
-        #             divider = -self.b[i][left_lower_col]
-        #             for inner_col in range(left_lower_col, i):
-        #                 self.b[i][inner_col] += self.b[left_lower_col][inner_col] * divider
-        #             self.f[i] += self.f[left_lower_col] * divider
-
-        #     if self.b[i, i]:
-        #         self.y[i] = self.f[i] / self.b[i, i]
-
     def calculate_y_using_podstanovka(self):
 
         for row in range(self.limit):
@@ -58,19 +47,24 @@ class NA(Algorithm):
                 s += self.b[row][left_lower_col] * self.y[left_lower_col]
             self.y[row] = (self.f[row] - s) / self.b[row][row]
 
-    def solve(self):
+    def presolve(self) -> None:
+
         Time_logger.get_instance().start_timer_for_event('SCR matrix division')
         self.build_triangle_matrix()
         Time_logger.get_instance().mark_timestamp_for_event('SCR matrix division')
 
+    def solve(self):
+
         self.calculate_y_using_podstanovka()
 
         R = np.zeros(self.limit)
-        for i in range(self.limit):
+
+        for i in range(self.limit - 1):
             xs = xs0 = 0
             s = self.y[i]
             j = i
-            while (abs(xs - xs0) > Utils.get_first_d(self) or j - i < 3) and j < self.limit - 1:
+            d = 1.0
+            while (d > Utils.get_first_d(self) or j - i < 3):
                 j += 1
                 d = self.c[i][j]
                 for k in range(i + 1, j):
@@ -79,5 +73,8 @@ class NA(Algorithm):
                 s = s - R[j] * self.y[j]
                 xs0 = xs
                 xs = s / self.c[i][i]
+                d = abs(xs - xs0)
             self.f[i] = xs
             print(i, xs, 'Iter: ', j)
+            if (d and d < Utils.get_first_d(self) and i > self.answers_length) or j == self.limit - 1:
+                break

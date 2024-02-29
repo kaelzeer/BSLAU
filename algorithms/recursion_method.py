@@ -1,11 +1,11 @@
 import numpy as np
 
-from helpers.matrix_builder import Matrix_builder
+from algorithms.base_alg import Algorithm
 from helpers.matrix_builder_new import NMatrix_builder
 from utils import Utils, Constants
 
 
-class Algorithm:
+class RM(Algorithm):
 
     def __init__(self, matrix_num: int) -> None:
 
@@ -33,10 +33,6 @@ class Algorithm:
     def build_matrix(self) -> None:
 
         NMatrix_builder.build_matrix(self)
-
-    def presolve(self) -> None:
-
-        pass
 
     def solve(self) -> None:
 
