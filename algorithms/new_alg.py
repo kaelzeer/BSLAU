@@ -20,6 +20,7 @@ class NA(Algorithm):
 
         self.y = np.zeros(self.limit)
         self.x = np.zeros(self.limit)
+        self.steps = 0
 
         self.initial_limit = 10
 
@@ -62,19 +63,42 @@ class NA(Algorithm):
         for i in range(self.limit - 1):
             xs = xs0 = 0
             s = self.y[i]
-            j = i
-            d = 1.0
-            while (d > Utils.get_first_d(self) or j - i < 3):
-                j += 1
-                d = self.c[i][j]
-                for k in range(i + 1, j):
-                    d -= R[k] * self.c[k][j]
-                R[j] = d / self.c[j][j]
-                s = s - R[j] * self.y[j]
+            self.steps = i
+            delta = 1.0
+            if i == 26:
+                todo = True
+            while (delta > Utils.get_first_d(self) or self.steps - i < 3):
+                self.steps += 1
+                d = self.c[i][self.steps]
+                for k in range(i + 1, self.steps):
+                    d -= R[k] * self.c[k][self.steps]
+                R[self.steps] = d / self.c[self.steps][self.steps]
+                s = s - R[self.steps] * self.y[self.steps]
                 xs0 = xs
                 xs = s / self.c[i][i]
-                d = abs(xs - xs0)
+                delta = abs(xs - xs0)
             self.f[i] = xs
-            print(i, xs, 'Iter: ', j)
-            if (d and d < Utils.get_first_d(self) and i > self.answers_length) or j == self.limit - 1:
+            print(f'i: {i}, iter: {self.steps} xs: {xs}, d: {delta}')
+            if (delta and delta < Utils.get_first_d(self) and i > self.answers_length) or self.steps == self.limit - 1:
                 break
+
+    def solve_at_index(self, i):
+
+        R = np.zeros(self.limit)
+
+        xs = xs0 = 0
+        s = self.y[i]
+        self.steps = i
+        d = 1.0
+        while (d > Utils.get_first_d(self) or self.steps - i < 3):
+            self.steps += 1
+            d = self.c[i][self.steps]
+            for k in range(i + 1, self.steps):
+                d -= R[k] * self.c[k][self.steps]
+            R[self.steps] = d / self.c[self.steps][self.steps]
+            s = s - R[self.steps] * self.y[self.steps]
+            xs0 = xs
+            xs = s / self.c[i][i]
+            d = abs(xs - xs0)
+        self.f[i] = xs
+        print(f'i: {i}, iter: {self.steps} xs: {xs}, d: {d}')

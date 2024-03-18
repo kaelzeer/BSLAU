@@ -22,7 +22,7 @@ class Algorithm:
 
     def post_init(self):
 
-        self.limit = Utils.get_limit(self)
+        self.limit = Utils.get_limit(self.matrix_num)
         # self.a = np.zeros((self.limit,self.limit))
         # self.f = np.zeros(self.limit)
         self.answers = np.zeros(self.limit)

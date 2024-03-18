@@ -9,6 +9,8 @@ from utils import Utils, Constants
 from helpers.solve_builder import Solve_builder
 from helpers.alg_builder import Algorithm_builder
 
+import numpy as np
+
 
 '''
 matrix_num = 1 - gaussian example 1
@@ -18,14 +20,21 @@ matrix_num = 4 - full example 2
 matrix_num = 5 - full example 3
 '''
 
-for matrix_num in range(1, Utils.get_matrix_count() + 1):
+# for matrix_num in range(1, Utils.get_matrix_count() + 1):
+matrix_num = 4
+if matrix_num == 4:
     # alg_type = 'BASE'
+    # alg_type = 'GJ'
+
     # alg_type = 'MPP'
     # alg_type = 'MZ'
-    # alg_type = 'GJ'
     # alg_type = 'SCR'
     alg_type = 'NA'
 
+    # if alg_type == 'MPP' and matrix_num > 2:
+    #     break
+
+    _CALC_NA_LAST_ANSWER = alg_type == 'NA' and matrix_num != 5
     alg = Algorithm_builder.get_alg(alg_type, matrix_num, False)
 
     '''
@@ -55,22 +64,26 @@ for matrix_num in range(1, Utils.get_matrix_count() + 1):
         Time_logger.get_instance().mark_timestamp_for_event('algorithm_solve')
 
         print()
+        answers = list
         if alg.alg_type == Constants.ALG_TYPE_MPP or alg.alg_type == Constants.ALG_TYPE_MZ:
-            Utils.print_answers(alg.xs, 'answers:', alg.steps, False, output)
-            Utils.print_answers(alg.xs, 'answers:', alg.steps, True, output)
+            answers = alg.xs
         elif alg.alg_type == Constants.ALG_TYPE_GJ:
-            Utils.print_answers(alg.f_check, 'answers:',
-                                alg.steps, False, output)
-            Utils.print_answers(alg.f_check, 'answers:',
-                                alg.steps, True, output)
+            answers = alg.f_check
         elif alg.alg_type == Constants.ALG_TYPE_SCR:
-            Utils.print_answers(alg.x, 'answers:', alg.steps, False, output)
-            Utils.print_answers(alg.x, 'answers:', alg.steps, True, output)
+            answers = alg.x
         elif alg.alg_type == Constants.ALG_TYPE_NA:
-            Utils.print_answers(alg.f, 'answers:', -1, False, output)
-            Utils.print_answers(alg.f, 'answers:', -1, True, output)
+            answers = alg.f
+        Utils.print_answers(answers, 'answers:', alg.steps,
+                            Constants.PRINT_FLOAT_PRECISION, output)
 
-        Solve_builder.build_solution(alg, output)
+        if _CALC_NA_LAST_ANSWER:
+            i = Constants.LAST_ANSWER_INDEX
+            alg.solve_at_index(i)
+            na_last_answer = np.zeros(1)
+            na_last_answer[0] = alg.f[i]
+            Utils.print_answers(na_last_answer, f'answer[{i}]:', alg.steps,
+                                Constants.PRINT_FLOAT_PRECISION, output)
 
-        Time_logger.get_instance().print_events(False, output)
-        Time_logger.get_instance().print_events(True, output)
+        Solve_builder.build_solution(alg, _CALC_NA_LAST_ANSWER, output)
+
+        Time_logger.get_instance().print_events(output)

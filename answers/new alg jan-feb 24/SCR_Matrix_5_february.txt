@@ -40,5 +40,5 @@ Original answers:
 
 Time logger:
 matrix_creation: 15 ms
-SCR matrix division: 219 ms
-algorithm_solve: 312 ms
+SCR matrix division: 235 ms
+algorithm_solve: 406 ms

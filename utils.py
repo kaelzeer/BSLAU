@@ -12,20 +12,22 @@ class Constants:
     Answers array length
     '''
     ANSWERS_COUNT = 10
+    LAST_ANSWER_INDEX = 40
     '''
 	General matrix **b** koef
 	'''
-    # B0 = 1.5  # variant std
-    B0 = 0.25   # variant 1
-    # B0 = 0.5  # variant 2
-    # B0 = 0.75   # variant 3
+    B0 = 0.25   # variant std
+    # B0 = 0.5  # variant 1
+    # B0 = 0.75   # variant 2
     '''
     Full matrix 2 **a** koef
     '''
-    # B0_FM2 = 2    # variant std
-    # A0_FM2 = 0.25  # variant std
-    B0_FM2 = 0.25  # variant 1
-    A0_FM2 = 2    # variant 1
+    # B0_FM2 = 0.25  # variant std
+    # A0_FM2 = 2    # variant std
+    # B0_FM2 = 0.5  # variant 1
+    # A0_FM2 = 1   # variant 1
+    B0_FM2 = 0.75  # variant 2
+    A0_FM2 = 0.67  # variant 2
 
     '''
 	Algoritm type enum
@@ -40,7 +42,7 @@ class Constants:
     '''
     Print float precision
     '''
-    PRINT_FLOAT_PRECISION = 5
+    PRINT_FLOAT_PRECISION = 6
 
 
 class Utils:
@@ -86,21 +88,6 @@ class Utils:
                           end='', file=output)
 
     @staticmethod
-    def print_mat_to_file(a: list, f: list, output: TextIOWrapper):
-        '''
-        Print matrix method. Project scoped
-        '''
-        n = 0
-        if len(a) < Utils.__print_lim:
-            n = len(a)
-        else:
-            n = Utils.__print_lim
-        for row in range(n):
-            for col in range(n):
-                print(f'{a[row][col]} ', end='', file=output)
-            print(f'|{f[row]}\n\n', end='', file=output)
-
-    @staticmethod
     def print_matrix_type_and_number(algorithm, output: TextIOWrapper = None):
 
         print(f'Matrix: {algorithm.matrix_num}')
@@ -131,79 +118,44 @@ class Utils:
             print(file=output)
 
     @staticmethod
-    def print_answers(x: list, answers_title_str: str, ss: int, to_file: bool, output: TextIOWrapper):
+    def print_answers(x: list, answers_title_str: str, ss: int, precision: int = 20, output: TextIOWrapper = None):
         '''
         Print answers of system equation. Project scoped
         '''
-        formatted_x = ['{:.20f}'.format(num) for num in x]
-
-        if to_file:
-            if ss != -1:
+        if ss != -1:
+            print(f's={ss}')
+            if output:
                 print(f's={ss}', file=output)
-            print(answers_title_str, file=output)
-            for i in range(Utils.__print_lim):
-                print(f'  {formatted_x[i]}', file=output)
-            print('', file=output)
-        else:
-            if ss != -1:
-                print(f's={ss}')
+        if answers_title_str != '':
             print(answers_title_str)
-            for i in range(Utils.__print_lim):
-                print(f'  {formatted_x[i]}')
-            print()
+            if output:
+                print(answers_title_str, file=output)
+        l = min(len(x), Utils.__print_lim)
+        for i in range(l):
+            if x[i] > 10 ** -precision:
+                print(f'  {x[i]:.{precision}f}')
+                if output:
+                    print(f'  {x[i]:.{precision}f}', file=output)
+            else:
+                print(f'  {x[i]:.{precision}e}')
+                if output:
+                    print(f'  {x[i]:.{precision}e}', file=output)
+        print()
+        if output:
+            print('', file=output)
 
     @staticmethod
-    def print_step(step: int, a: list, f: list, step_row: int, step_col: int, to_zero: bool):
-        '''
-        Print step of GJ alg. Project scoped
-        '''
-        if to_zero:
-            print(f'\n{step}. calc cell [{step_row},{step_col}] to zero:\n')
-        else:
-            print(f'\n{step}. calc cell [{step_row},{step_col}] to one:\n')
-        for row in range(Utils.__print_lim):
-            for col in range(Utils.__print_lim):
-                if row == step_row and col == step_col:
-                    print(f'[{a[row][col]}] ', end='')
-                else:
-                    print(f' {a[row][col]}  ', end='')
-            print(f'|{f[row]}\n\n', end='')
-
-    @staticmethod
-    def print_step_with_output(step: int, a: list, f: list, step_row: int, step_col: int, to_zero: bool, output: TextIOWrapper):
-        '''
-        Print step of GJ alg. Project scoped
-        '''
-        if to_zero:
-            print(
-                f'\n{step}. calc cell [{step_row},{step_col}] to zero:\n', file=output)
-        else:
-            if step_row == 5 and step_col == 5:
-                todo = True
-            print(
-                f'\n{step}. calc cell [{step_row},{step_col}] to one:\n', file=output)
-        print('{', file=output)
-        for row in range(Utils.__print_lim):
-            for col in range(Utils.__print_lim):
-                if row == step_row and col == step_col:
-                    print(f'\t[{a[row][col]}] ', end='', file=output)
-                else:
-                    print(f'\t {a[row][col]}  ', end='', file=output)
-            print(f'|{f[row]}', file=output)
-        print('}\n', file=output)
-
-    @staticmethod
-    def get_limit(algorithm) -> int:
+    def get_limit(matrix_num) -> int:
         '''
         Get limit for specific algorithm and matrix. Project scoped
         '''
-        # if algorithm.matrix_num == 1:
+        # if matrix_num == 1:
         #     return Constants.FIRST_MATRIX_LIMIT
-        # elif algorithm.matrix_num == 2:
+        # elif matrix_num == 2:
         #     return Constants.SECOND_MATRIX_LIMIT
-        if algorithm.matrix_num == 1 or algorithm.matrix_num == 3:
+        if matrix_num == 1 or matrix_num == 3:
             return Constants.FACTORIAL_MATRIX_LIMIT
-        # elif algorithm.matrix_num == 4:
+        # elif matrix_num == 4:
         #     return Constants.FOURTH_MATRIX_LIMIT
         return Constants.BASE_MATRIX_LIMIT
 

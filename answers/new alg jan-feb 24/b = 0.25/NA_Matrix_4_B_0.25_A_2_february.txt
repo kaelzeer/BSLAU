@@ -38,6 +38,6 @@ Original answers:
   0.00000254313151041667
 
 Time logger:
-matrix_creation: 15 ms
+matrix_creation: 0 ms
 SCR matrix division: 219 ms
 algorithm_solve: 0 ms

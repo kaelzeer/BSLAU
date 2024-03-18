@@ -39,5 +39,5 @@ Original answers:
   0.00000000000000000000
 
 Time logger:
-matrix_creation: 16 ms
-algorithm_solve: 15 ms
+matrix_creation: 15 ms
+algorithm_solve: 0 ms
