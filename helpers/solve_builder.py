@@ -24,6 +24,9 @@ class Solve_builder:
         elif algorithm.matrix_num == 5:
             Solve_builder.build_prac_solution(
                 algorithm.answers, algorithm.answers_length, algorithm.b0, output)
+        elif algorithm.matrix_num == 6:
+            Solve_builder.build_homogeneous_first_solution(
+                algorithm.answers, algorithm.answers_length, algorithm.b0, output)
 
     @staticmethod
     def build_gaussian_example_first_solution(answer: np.array, limit: int, b: float, calc_na_last_answer: bool = False, output: TextIOWrapper = None) -> None:
@@ -102,6 +105,15 @@ class Solve_builder:
         answer[7] = 0.0193
         answer[8] = -0.0141
         answer[9] = 0.0103
+
+        Utils.print_answers(answer, 'Original answers:', -1,
+                            Constants.PRINT_FLOAT_PRECISION, output)
+
+    @staticmethod
+    def build_homogeneous_first_solution(answer: np.array, limit: int, b: float, output: TextIOWrapper) -> None:
+        for i in range(limit):
+            answer[i] = ((-1) ** i) * (np.pi ** (2 * i)) / \
+                (math.factorial(2 * i) * 2 ** (2 * i))
 
         Utils.print_answers(answer, 'Original answers:', -1,
                             Constants.PRINT_FLOAT_PRECISION, output)

@@ -65,8 +65,6 @@ class NA(Algorithm):
             s = self.y[i]
             self.steps = i
             delta = 1.0
-            if i == 26:
-                todo = True
             while (delta > Utils.get_first_d(self) or self.steps - i < 3):
                 self.steps += 1
                 d = self.c[i][self.steps]

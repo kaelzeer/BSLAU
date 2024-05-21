@@ -153,7 +153,7 @@ class Utils:
         #     return Constants.FIRST_MATRIX_LIMIT
         # elif matrix_num == 2:
         #     return Constants.SECOND_MATRIX_LIMIT
-        if matrix_num == 1 or matrix_num == 3:
+        if matrix_num == 1 or matrix_num == 3 or matrix_num == 6:
             return Constants.FACTORIAL_MATRIX_LIMIT
         # elif matrix_num == 4:
         #     return Constants.FOURTH_MATRIX_LIMIT

@@ -21,8 +21,8 @@ matrix_num = 5 - full example 3
 '''
 
 # for matrix_num in range(1, Utils.get_matrix_count() + 1):
-matrix_num = 4
-if matrix_num == 4:
+matrix_num = 6
+if matrix_num == 6:
     # alg_type = 'BASE'
     # alg_type = 'GJ'
 
@@ -76,13 +76,13 @@ if matrix_num == 4:
         Utils.print_answers(answers, 'answers:', alg.steps,
                             Constants.PRINT_FLOAT_PRECISION, output)
 
-        if _CALC_NA_LAST_ANSWER:
-            i = Constants.LAST_ANSWER_INDEX
-            alg.solve_at_index(i)
-            na_last_answer = np.zeros(1)
-            na_last_answer[0] = alg.f[i]
-            Utils.print_answers(na_last_answer, f'answer[{i}]:', alg.steps,
-                                Constants.PRINT_FLOAT_PRECISION, output)
+        # if _CALC_NA_LAST_ANSWER:
+        #     i = Constants.LAST_ANSWER_INDEX
+        #     alg.solve_at_index(i)
+        #     na_last_answer = np.zeros(1)
+        #     na_last_answer[0] = alg.f[i]
+        #     Utils.print_answers(na_last_answer, f'answer[{i}]:', alg.steps,
+        #                         Constants.PRINT_FLOAT_PRECISION, output)
 
         Solve_builder.build_solution(alg, _CALC_NA_LAST_ANSWER, output)
 

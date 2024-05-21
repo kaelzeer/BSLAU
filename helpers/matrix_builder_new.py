@@ -26,6 +26,8 @@ class NMatrix_builder:
             NMatrix_builder.build_full_example_second(algorithm)
         elif algorithm.matrix_num == 5:
             NMatrix_builder.build_prac_matrix(algorithm)
+        elif algorithm.matrix_num == 6:
+            NMatrix_builder.build_first_homogeneous_matrix(algorithm)
 
         Time_logger.get_instance().mark_timestamp_for_event("matrix_creation")
 
@@ -116,6 +118,30 @@ class NMatrix_builder:
             algorithm.f[i] = 1
             algorithm.a[i, i] = algorithm.a[i, i] + \
                 _prac_matrix_alpha(2*(i+1)-1)*math.sin((2*(i+1)-1)*math.pi/2)
+
+    @staticmethod
+    def build_first_homogeneous_matrix(algorithm) -> None:
+        algorithm.f = np.zeros(algorithm.limit)
+        algorithm.a = np.zeros((algorithm.limit, algorithm.limit), np.double)
+
+        a = 1
+        for j in range(algorithm.limit):
+            if j > 0:
+                a = a * (2 * j - 1) * (2 * j)
+            algorithm.a[j, j] = a
+            ap = a
+            for p in range(1, algorithm.limit - j):
+                ap = ap * (2 * j + 2 * p - 1) * (2 * j + 2 * p) / \
+                    ((2 * p - 1) * (2 * p))
+                algorithm.a[j, j+p] = ap
+
+        for i in range(algorithm.limit):
+            algorithm.f[i] = algorithm.a[i][0]
+            for j in range(algorithm.limit - 1):
+                algorithm.a[i][j] = algorithm.a[i][j + 1]
+
+        Utils.print_matrix_type_and_number(algorithm)
+        Utils.print_mat(algorithm.a, algorithm.f)
 
     @staticmethod
     def build_old_first_matrix(algorithm) -> None:
