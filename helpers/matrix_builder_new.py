@@ -121,22 +121,34 @@ class NMatrix_builder:
 
     @staticmethod
     def build_first_homogeneous_matrix(algorithm) -> None:
+
+        algorithm.first_index = 1
         algorithm.f = np.zeros(algorithm.limit)
         algorithm.a = np.zeros((algorithm.limit, algorithm.limit), np.double)
+        temp_matrix = np.zeros((algorithm.limit, algorithm.limit), np.double)
+        lower_triangle_matrix = np.zeros((algorithm.limit, algorithm.limit))
+
+        for i in range(algorithm.limit):
+            for j in range(i, algorithm.limit):
+                lower_triangle_matrix[j][i] = 1
 
         a = 1
         for j in range(algorithm.limit):
             if j > 0:
                 a = a * (2 * j - 1) * (2 * j)
-            algorithm.a[j, j] = a
+            temp_matrix[j, j] = a
+            # algorithm.a[j, j] = a
             ap = a
             for p in range(1, algorithm.limit - j):
                 ap = ap * (2 * j + 2 * p - 1) * (2 * j + 2 * p) / \
                     ((2 * p - 1) * (2 * p))
-                algorithm.a[j, j+p] = ap
+                temp_matrix[j, j+p] = ap
+                # algorithm.a[j, j+p] = ap
+
+        algorithm.a = np.matmul(lower_triangle_matrix, temp_matrix)
 
         for i in range(algorithm.limit):
-            algorithm.f[i] = algorithm.a[i][0]
+            algorithm.f[i] = -algorithm.a[i][0]
             for j in range(algorithm.limit - 1):
                 algorithm.a[i][j] = algorithm.a[i][j + 1]
 

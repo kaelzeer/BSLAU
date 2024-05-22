@@ -18,6 +18,7 @@ class Algorithm:
             self.a0 = Constants.A0_FM2
             self.b0 = Constants.B0_FM2
         self.matrix_num = matrix_num
+        self.first_index = 0
         self.limit = Constants.BASE_MATRIX_LIMIT
 
     def post_init(self):

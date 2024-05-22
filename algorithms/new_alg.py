@@ -58,24 +58,36 @@ class NA(Algorithm):
 
         self.calculate_y_using_podstanovka()
 
+        # print('b | y')
+        # Utils.print_mat(self.b, self.y)
+        # print('c | f')
+        # Utils.print_mat(self.c, self.f)
+
         R = np.zeros(self.limit)
+
+        if self.first_index:
+            self.b = np.insert(self.b, 0, np.zeros(self.limit), 0)
+            self.c = np.insert(self.c, 0, np.zeros(self.limit), 0)
+            self.y = np.insert(self.y, 0, 0, 0)
+            self.f = np.insert(self.f, 0, 1, 0)
 
         for i in range(self.limit - 1):
             xs = xs0 = 0
-            s = self.y[i]
+            s = self.y[i + self.first_index]
             self.steps = i
             delta = 1.0
             while (delta > Utils.get_first_d(self) or self.steps - i < 3):
                 self.steps += 1
-                d = self.c[i][self.steps]
+                d = self.c[i + self.first_index][self.steps]
                 for k in range(i + 1, self.steps):
-                    d -= R[k] * self.c[k][self.steps]
-                R[self.steps] = d / self.c[self.steps][self.steps]
-                s = s - R[self.steps] * self.y[self.steps]
+                    d -= R[k] * self.c[k + self.first_index][self.steps]
+                R[self.steps] = d / self.c[self.steps +
+                                           self.first_index][self.steps]
+                s = s - R[self.steps] * self.y[self.steps + self.first_index]
                 xs0 = xs
-                xs = s / self.c[i][i]
+                xs = s / self.c[i + self.first_index][i]
                 delta = abs(xs - xs0)
-            self.f[i] = xs
+            self.f[i + self.first_index] = xs
             print(f'i: {i}, iter: {self.steps} xs: {xs}, d: {delta}')
             if (delta and delta < Utils.get_first_d(self) and i > self.answers_length) or self.steps == self.limit - 1:
                 break
